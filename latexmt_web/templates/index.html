@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<head>
+  <title>LaTeXMT Web</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+        sans-serif;
+    }
+
+    #submitted-job {
+      color: deeppink;
+    }
+
+    #job-list {
+      width: 806px;
+    }
+
+    #job-list th {
+      text-align: unset;
+    }
+
+    #job-list code {
+      white-space: pre;
+      overflow-x: scroll;
+      display: block;
+      width: 800px;
+      height: 600px;
+      padding-bottom: 10px;
+      resize: both;
+    }
+  </style>
+
+  <script type="text/javascript" src="{{ url_for('static', filename='js/latexmt.js') }}"></script>
+  <script type="text/javascript">
+    window.onload = () => {
+      setTimeout(update_loop, update_loop_interval)
+
+      document.querySelector('#glossary').addEventListener('dragover', (e) => e.preventDefault())
+
+      document.querySelector('#glossary').addEventListener('drop', handleFileDrop)
+    }
+  </script>
+</head>
+
+<body>
+  <h1>LaTeXMT Web</h1>
+  <h2>Submit a job</h2>
+  <form onsubmit="submit_form(event)" enctype="multipart/form-data">
+    <table id="job-table">
+      <tr>
+        <td>
+          <input type="file" name="document" id="document" />
+        </td>
+        <td>
+          <label for="document">Input document (.tex or .zip)</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select name="src_lang" id="src_lang">
+            {% for lang in languages %}
+            <option value="{{ lang }}" {% if lang==src_default %}selected{% endif %}>{{ lang }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <label for="src_lang">Source language</label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <select name="tgt_lang" id="tgt_lang">
+            {% for lang in languages %}
+            <option value="{{ lang }}" {% if lang==tgt_default %}selected{% endif %}>{{ lang }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <label for="tgt_lang">Target language</label>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div><label for="glossary">Glossary</label></div>
+          <textarea id="glossary" name="glossary" style="width:100%" rows="10"
+            placeholder="Drop a glossary file in CSV format (without header) here, or type it in"></textarea>
+        </td>
+      </tr>
+    </table>
+    <input type="submit" value="Submit job" />
+  </form>
+  {% if submitted_id %}<p id="submitted-job">Submitted job {{ submitted_id }}</p>{% endif %}
+  <h2>Active jobs</h2>
+  <table id="job-list">
+    <tr>
+      <th>Job ID</th>
+      <th>Status</th>
+    </tr>
+    {% for job in jobs %}
+    <tr data-id="{{ job.id }}">
+      <td>{{ job.id }}</td>
+      <td>
+        {{ job.status }}
+        {% if job.download_url %}(<a href="{{ job.download_url }}">download</a>){% endif %}
+      </td>
+      <td>
+        <button data-id="{{ job.id }}" onclick="show_logs({{ job.id }})">Logs</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>

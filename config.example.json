@@ -1,0 +1,21 @@
+{
+  "work_dir": "/tmp/latexmt_server",
+  "log_level": "INFO",
+
+  "_comment0": "one of [null, opus, api_opus, api_deepl, api_openai]",
+  "translator": "opus",
+
+  "_comment1": [
+    "one of [null, opus, awesome]",
+    "null and opus may only be used with corresponding translators"
+  ],
+  "aligner": "opus",
+
+  "_comment2": "gitignored symlink(s)",
+  "opus_model": "./model-{src}-{tgt}",
+
+  "_comment3": "may be omitted or set to `null` to disable formatting",
+  "texfmt_bin": "/usr/bin/tex-fmt",
+  "_comment4": "may be omitted or set to `null` to use tex-fmt's defaults",
+  "texfmt_conf": "/etc/tex-fmt.conf"
+}
