@@ -185,7 +185,7 @@ def download(job_id: str):
 
 @app.route('/translate', methods=['POST'])
 def single():
-    input_text = request.form['input_text']
+    input_text = '\n'.join(request.form['input_text'].splitlines())
     src_lang = request.form['src_lang']
     tgt_lang = request.form['tgt_lang']
     glossary = request.form['glossary'] if 'glossary' in request.form else ''
