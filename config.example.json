@@ -9,7 +9,7 @@
     "one of [auto, awesome]",
     "'auto' selects translator's built-in aligner if supported"
   ],
-  "aligner": "auto",
+  "aligner": "awesome",
 
   "_comment2": [
     "may point to a local model (absolute path or ./[...])",
