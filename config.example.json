@@ -6,13 +6,16 @@
   "translator": "opus",
 
   "_comment1": [
-    "one of [null, opus, awesome]",
-    "null and opus may only be used with corresponding translators"
+    "one of [auto, awesome]",
+    "'auto' selects translator's built-in aligner if supported"
   ],
-  "aligner": "opus",
+  "aligner": "auto",
 
-  "_comment2": "gitignored symlink(s)",
-  "opus_model": "./model-{src}-{tgt}",
+  "_comment2": [
+    "may point to a local model (absolute path or ./[...])",
+    "or one on HuggingFace"
+  ],
+  "opus_model": "Helsinki-NLP/opus-mt-{src}-{tgt}",
 
   "_comment3": "may be omitted or set to `null` to disable formatting",
   "texfmt_bin": "/usr/bin/tex-fmt",
