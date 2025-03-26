@@ -187,7 +187,6 @@ def single():
                  tgt_lang=tgt_lang,
                  download_url=None,
                  glossary=glossary)
-    params = db.create_job(params)
 
     # log_file = log_base().joinpath(str(params.id) + '.log')
     # file_handler = logging.FileHandler(log_file)
