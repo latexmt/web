@@ -1,13 +1,13 @@
-const job_table_id = 'job-list'
+const jobTableId = 'job-list'
 
-function get_job_table() {
-  return document.getElementById(job_table_id).children[0]
+function getJobTable() {
+  return document.querySelector(`#${jobTableId} > tbody`)
 }
 
-function clear_job_table() {
-  const rows = document.querySelectorAll(`#${job_table_id} tr:not(:first-child)`)
-  // const rows = get_job_table().querySelectorAll('tr:not(:first-child))')
-  rows.forEach(e => e.remove())
+function clearJobTable() {
+  for (const e of getJobTable().children) {
+    e.remove()
+  }
 }
 
 /**
@@ -17,7 +17,7 @@ function clear_job_table() {
  *    download_url: string | null
  * }[]>}
  */
-async function get_jobs() {
+async function getJobs() {
   const response = await fetch('/api/jobs')
   if (!response.ok) {
     console.error('fetching jobs failed')
@@ -28,89 +28,91 @@ async function get_jobs() {
 }
 
 /**
- * @param job { {
+ * @param { {
  *    id: number
  *    status: string
  *    download_url: string | null
- * } }
+ * } } job
  */
-function format_job_row(job) {
-  return `<td>${job.id}</td>
-    <td>
-      ${job.status} ${job.download_url ? '(<a href="' + job.download_url + '">download</a>)' : ''}
-    </td>
-    <td>
-      <button data-id="${job.id}" onclick="show_logs(${job.id})">Logs</button>
-    </td>`
+function formatJobRow(job) {
+  return `<tr data-id="${job.id}">
+      <td scope="row" class="align-middle">${job.id}</td>
+      <td scope="row" class="align-middle">
+        ${job.status}
+        ${
+          job.download_url
+            ? '(<a href="' + job.download_url + '">download</a>)'
+            : ''
+        }
+      </td>
+      <td scope="row" class="align-middle">
+        <button
+          data-id="${job.id}"
+          type="button"
+          class="btn btn-link"
+          onclick="showLogs(${job.id})"
+        >
+          Logs
+        </button>
+      </td>
+    </tr>`
 }
 
-async function update_job_table() {
-  const jobs = await get_jobs()
+async function updateJobTable() {
+  const jobs = await getJobs()
 
-  let existing_jobs = []
+  let existingJobs = []
 
-  const job_table = get_job_table()
+  const jobTable = getJobTable()
   for (const job of jobs) {
-    existing_jobs.push(job.id)
+    existingJobs.push(job.id)
 
-    const row_elem = document.querySelector(`tr[data-id="${job.id}"]`)
-    if (!row_elem) {
-      job_table.innerHTML += `<tr data-id="${job.id}">${format_job_row(job)}</tr>`
+    const rowElem = jobTable.querySelector(`tr[data-id="${job.id}"]`)
+    if (!rowElem) {
+      jobTable.innerHTML += formatJobRow(job)
     } else {
-      row_elem.innerHTML = format_job_row(job)
+      rowElem.outerHTML = formatJobRow(job)
     }
   }
 
   for (const elem of document.querySelectorAll('tr[data-id]')) {
-    const job_id = parseInt(elem.attributes['data-id'].value)
-    if (!existing_jobs.includes(job_id)) {
-      close_logs(job_id)
+    const jobId = parseInt(elem.attributes['data-id'].value)
+    if (!existingJobs.includes(jobId)) {
+      closeLogs(jobId)
       elem.remove()
     }
   }
 }
 
 /**
- * @param event {SubmitEvent}
- */
-async function submit_form(event) {
-  event.preventDefault()
-
-  console.log(event.submitter)
-  const response = await fetch('/submit', {
-    method: 'POST',
-    body: new FormData(event.submitter.parentElement)
-  })
-
-  await update_job_table()
-}
-
-/**
  * @type {Record<number, {socket: WebSocket; elem: HTMLElement}>}
  */
-const log_rows = {}
+const logRows = {}
 
 /**
- * @param job_id {number}
+ * @param {number} jobId
  */
-function show_logs(job_id) {
-  if (job_id in log_rows) {
-    close_logs(job_id)
+function showLogs(jobId) {
+  if (jobId in logRows) {
+    closeLogs(jobId)
     return
   }
 
-  const socket = new WebSocket(`/logs/${job_id}`)
+  const socket = new WebSocket(`/logs/${jobId}`)
 
-  button_node = document.querySelector(`button[data-id="${job_id}"]`)
+  button_node = document.querySelector(`button[data-id="${jobId}"]`)
   const elem = document.createElement('tr')
   elem.innerHTML = '<td colspan=3><code></code></td>'
-  button_node.parentElement.parentElement.parentElement.insertBefore(elem, button_node.parentElement.parentElement.nextSibling)
+  button_node.parentElement.parentElement.parentElement.insertBefore(
+    elem,
+    button_node.parentElement.parentElement.nextSibling
+  )
 
   const code_elem = elem.childNodes[0].childNodes[0]
 
-  log_rows[job_id] = { socket, elem: code_elem }
+  logRows[jobId] = { socket, elem: code_elem }
 
-  socket.addEventListener('message', (event) => {
+  socket.addEventListener('message', event => {
     const data = JSON.parse(event.data)
     if ('error' in data) {
       console.error(data.error)
@@ -123,24 +125,19 @@ function show_logs(job_id) {
   })
 }
 
-function close_logs(job_id) {
-  if (job_id in log_rows) {
-    if (log_rows[job_id].socket.readyState !== WebSocket.CLOSED)
-      log_rows[job_id].socket.close()
+function closeLogs(jobId) {
+  if (jobId in logRows) {
+    if (logRows[jobId].socket.readyState !== WebSocket.CLOSED)
+      logRows[jobId].socket.close()
 
-    log_rows[job_id].elem.parentElement.parentElement.remove()
+    logRows[jobId].elem.parentElement.parentElement.remove()
 
-    delete log_rows[job_id]
+    delete logRows[jobId]
   }
 }
 
-const update_loop_interval = 3000
-function update_loop() {
-  update_job_table().finally(() => setTimeout(update_loop, update_loop_interval))
-}
-
 /**
- * @param event {DragEvent}
+ * @param {DragEvent} event
  */
 async function handleFileDrop(event) {
   const dropTarget = event.target
@@ -148,9 +145,62 @@ async function handleFileDrop(event) {
   if (event.dataTransfer.files.length > 0) {
     const file = event.dataTransfer.files[0]
 
-    if( 'value' in dropTarget)
-      dropTarget.value = await file.text()
-    else
-      dropTarget.innerHTML = await file.text()
+    if ('value' in dropTarget) dropTarget.value = await file.text()
+    else dropTarget.innerHTML = await file.text()
+  }
+}
+
+/**
+ * @param {string} query
+ */
+function addFileDrop(query) {
+  document
+    .querySelector(query)
+    .addEventListener('dragover', e => e.preventDefault())
+  document.querySelector(query).addEventListener('drop', handleFileDrop)
+}
+
+/**
+ * @param {SubmitEvent} event
+ */
+async function translateSingle(event) {
+  event.preventDefault()
+
+  const formData = new FormData(event.submitter.form)
+  setFormState('disabled', 'translate-single')
+  const result = await fetch('/translate', {
+    method: 'POST',
+    body: formData,
+  }).finally(() => setFormState('enabled', 'translate-single'))
+
+  document.querySelector('#output_text').innerHTML = await result.text()
+}
+
+/**
+ * @param {SubmitEvent} event
+ */
+async function translateJob(event) {
+  event.preventDefault()
+
+  const formData = new FormData(event.submitter.form)
+  const response = await fetch('/submit', {
+    method: 'POST',
+    body: formData,
+  })
+
+  await updateJobTable()
+}
+
+/**
+ * @param {('enabled' | 'disabled')} state
+ * @param {string} formName
+ */
+function setFormState(state, formName) {
+  for (const elem of document.forms.namedItem(formName)) {
+    if (state === 'enabled') {
+      elem.removeAttribute('disabled')
+    } else {
+      elem.setAttribute('disabled', true)
+    }
   }
 }

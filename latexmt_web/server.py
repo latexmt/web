@@ -69,10 +69,6 @@ templates = {
               {'languages': ['de', 'en'],
                'src_default': 'de',
                'tgt_default': 'en'}),
-    'direct': ('direct.html',
-               {'languages': ['de', 'en'],
-                'src_default': 'de',
-                'tgt_default': 'en'})
 }
 
 
@@ -81,14 +77,9 @@ def render_template_with_defaults(template_name: str, **context):
     return render_template(template, **defaults, **context)
 
 
-@app.route('/jobs')
-def index():
-    return render_template_with_defaults('index', jobs=get_jobs())
-
-
 @app.route('/')
 def direct():
-    return render_template_with_defaults('direct', jobs=get_jobs())
+    return render_template_with_defaults('index', jobs=get_jobs())
 
 
 @app.route('/api/jobs')
