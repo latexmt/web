@@ -58,24 +58,23 @@
     }
 
     window.onload = () => {
-      addFileDrop('#glossary')
-      addFileDrop('#input_text')
+      addFileDrop('textarea.filedrop-target')
 
       document.forms
         .namedItem('translate-text')
-        .addEventListener('submit', translateSingle)
+        .addEventListener('submit', translateText)
 
       document.forms
         .namedItem('translate-documents')
-        .addEventListener('submit', translateJob)
+        .addEventListener('submit', translateDocument)
 
       updateLoop()
     }
   </script>
 </head>
 <body>
-  <div class="col-lg-8 mx-auto p-4 py-md-5">
-    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+  <div style="max-width: 1200px" class="mx-auto p-4 py-md-5">
+    <header class="d-flex align-items-center pb-3 mb-3 border-bottom">
       <a
         href="/"
         class="d-flex align-items-center text-body-emphasis text-decoration-none">
@@ -116,14 +115,13 @@
           class="tab-pane show active"
           id="pane-text"
           aria-labelledby="tab-text">
-          <form id="translate-text">
+          <form id="translate-text" enctype="multipart/form-data">
             <div class="row">
-              <div class="col-6 mb-3">
+              <div class="col-sm-6 mb-3">
                 <div class="form-floating">
                   <select
                     class="form-select"
                     name="src_lang"
-                    id="src_lang"
                     aria-label="Source language">
                     <option value="de" selected>Deutsch</option>
                     <option value="en">English</option>
@@ -131,12 +129,11 @@
                   <label for="src_lang">Source language</label>
                 </div>
               </div>
-              <div class="col-6 mb-3">
+              <div class="col-sm-6 mb-3">
                 <div class="form-floating">
                   <select
                     class="form-select"
                     name="tgt_lang"
-                    id="tgt_lang"
                     aria-label="Target language">
                     <option value="de">Deutsch</option>
                     <option value="en" selected>English</option>
@@ -144,16 +141,18 @@
                   <label for="tgt_lang">Target language</label>
                 </div>
               </div>
-              <div class="col mb-3">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
                 <label for="input" class="form-label">Input</label>
                 <textarea
-                  class="form-control"
+                  class="form-control filedrop-target"
                   name="input_text"
                   id="input_text"
                   rows="10"
                   placeholder="Type LaTeX code or drop a file here"></textarea>
               </div>
-              <div class="col mb-3">
+              <div class="col-md-6 mb-3">
                 <label for="translation" class="form-label">Translation</label>
                 <textarea
                   class="form-control"
@@ -162,22 +161,43 @@
                   readonly
                   placeholder="Translated LaTeX code will appear here"></textarea>
               </div>
-              <div class="col-12 mb-3">
-                <button type="submit" class="btn btn-primary">Translate</button>
-              </div>
+            </div>
+            <div class="col-12 mb-3">
+              <button type="submit" class="btn btn-primary">Translate</button>
             </div>
           </form>
         </div>
         <div
-          class="tab-pane show-active"
+          class="tab-pane"
           id="pane-documents"
           aria-labelledby="tab-documents">
-          <h2>Submit job</h2>
-          <form
-            onsubmit="submit_form(event)"
-            enctype="multipart/form-data"
-            class="row g-3"
-            id="translate-documents">
+          <form id="translate-documents" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <div class="form-floating">
+                  <select
+                    class="form-select"
+                    name="src_lang"
+                    aria-label="Source language">
+                    <option value="de" selected>Deutsch</option>
+                    <option value="en">English</option>
+                  </select>
+                  <label for="src_lang">Source language</label>
+                </div>
+              </div>
+              <div class="col-sm-6 mb-3">
+                <div class="form-floating">
+                  <select
+                    class="form-select"
+                    name="tgt_lang"
+                    aria-label="Target language">
+                    <option value="de">Deutsch</option>
+                    <option value="en" selected>English</option>
+                  </select>
+                  <label for="tgt_lang">Target language</label>
+                </div>
+              </div>
+            </div>
             <div class="col-12 mb-3">
               <label for="document" class="form-label"
                 >Input document (.tex or .zip)</label
@@ -192,38 +212,11 @@
                 We'll never share your data with anyone else.
               </div>
             </div>
-            <div class="col">
-              <div class="mb-3 form-floating">
-                <select
-                  class="form-select"
-                  name="src_lang"
-                  id="src_lang"
-                  aria-label="Source language">
-                  <option value="de" selected>Deutsch</option>
-                  <option value="en">English</option>
-                </select>
-                <label for="src_lang">Source language</label>
-              </div>
-            </div>
-            <div class="col">
-              <div class="mb-3 form-floating">
-                <select
-                  class="form-select"
-                  name="tgt_lang"
-                  id="tgt_lang"
-                  aria-label="Target language">
-                  <option value="de">Deutsch</option>
-                  <option value="en" selected>English</option>
-                </select>
-                <label for="tgt_lang">Target language</label>
-              </div>
-            </div>
             <div class="col-12 mb-3">
               <label for="glossary" class="form-label">Glossary</label>
               <textarea
-                class="form-control"
+                class="form-control filedrop-target"
                 name="glossary"
-                id="glossary"
                 rows="5"
                 aria-describedby="glossaryHelpBlock"
                 placeholder="phrase1,translation1"></textarea>
@@ -239,19 +232,18 @@
               </button>
             </div>
           </form>
-          <div class="container my-5">
-            <h3>Active jobs</h3>
-            <table class="table" id="job-list">
-              <thead>
-                <tr>
-                  <th scope="col">Job ID</th>
-                  <th scope="col">Status</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
+          <hr />
+          <h3>Active jobs</h3>
+          <table class="table" id="job-list">
+            <thead>
+              <tr>
+                <th scope="col">Job ID</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
     </main>

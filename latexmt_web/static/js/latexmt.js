@@ -155,24 +155,25 @@ async function handleFileDrop(event) {
  * @param {string} query
  */
 function addFileDrop(query) {
-  document
-    .querySelector(query)
-    .addEventListener('dragover', e => e.preventDefault())
-  document.querySelector(query).addEventListener('drop', handleFileDrop)
+  document.querySelectorAll(query).forEach(elem => {
+    elem.addEventListener('dragover', e => e.preventDefault())
+    elem.addEventListener('drop', handleFileDrop)
+  })
 }
 
 /**
  * @param {SubmitEvent} event
  */
-async function translateSingle(event) {
+async function translateText(event) {
   event.preventDefault()
 
   const formData = new FormData(event.submitter.form)
-  setFormState('disabled', 'translate-single')
+  setFormState('disabled', event.submitter.form.id)
+  document.querySelector('#output_text').innerHTML = ''
   const result = await fetch('/translate', {
     method: 'POST',
     body: formData,
-  }).finally(() => setFormState('enabled', 'translate-single'))
+  }).finally(() => setFormState('enabled', event.submitter.form.id))
 
   document.querySelector('#output_text').innerHTML = await result.text()
 }
@@ -180,7 +181,7 @@ async function translateSingle(event) {
 /**
  * @param {SubmitEvent} event
  */
-async function translateJob(event) {
+async function translateDocument(event) {
   event.preventDefault()
 
   const formData = new FormData(event.submitter.form)
