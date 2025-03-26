@@ -206,3 +206,40 @@ function setFormState(state, formName) {
     }
   }
 }
+
+/**
+ * @param {Event} event
+ */
+function syncValue(event) {
+  /**
+   * @type {string}
+   */
+  const syncId = event.target.attributes['data-sync-id'].value
+  const syncValue = event.target.value
+
+  document
+    .querySelectorAll(`[data-sync-id='${syncId}']`)
+    .forEach(elem => elem !== event.target && (elem.value = syncValue))
+}
+
+/**
+ * @param {string} query
+ */
+function addValueSync(query) {
+  const syncObserver = new MutationObserver((mutationList, observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === 'childList') {
+        syncValue(mutation.target)
+      }
+    }
+  })
+  document.querySelectorAll(query).forEach(elem => {
+    // watch .value
+    elem.addEventListener('change', syncValue)
+    // watch .innerHTML
+    syncObserver.observe(elem, {
+      characterData: true,
+      subtree: true,
+    })
+  })
+}

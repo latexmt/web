@@ -129,22 +129,9 @@
       updateJobTable().finally(() => setTimeout(updateLoop, updateLoopInterval))
     }
 
-    /**
-    * @param {Event} event
-    */
-    function syncValue(event) {
-      /**
-      * @type {string}
-      */
-      const syncId = event.target.attributes['data-sync-id'].value
-      const syncValue = event.target.value
-
-      document.querySelectorAll(`[data-sync-id='${syncId}']`)
-        .forEach(elem => elem.value = syncValue)
-    }
-
     window.onload = () => {
       addFileDrop('textarea.filedrop-target')
+      addValueSync('.sync-value')
 
       document.forms
         .namedItem('translate-text')
@@ -153,26 +140,6 @@
       document.forms
         .namedItem('translate-documents')
         .addEventListener('submit', translateDocument)
-
-      // watch for input value changes
-      const syncObserver = new MutationObserver((mutationList, observer) => {
-        for (const mutation of mutationList) {
-          if (mutation.type === 'childList') {
-            syncValue(mutation.target)
-          }
-        }
-      })
-      document
-        .querySelectorAll('.sync-value')
-        .forEach(elem => {
-          // watch .value
-          elem.addEventListener('change', syncValue)
-          // watch .innerHTML
-          syncObserver.observe(elem, {
-            characterData: true,
-            subtree: true,
-          })
-        })
 
       updateLoop()
     }
