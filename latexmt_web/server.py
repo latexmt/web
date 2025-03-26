@@ -15,6 +15,7 @@ from io import BytesIO
 import logging
 import shutil
 from zipfile import ZipFile, ZIP_STORED
+from typing import Any
 
 from latexmt_core.context_logger import ContextLogger
 from .configure import ConfigKey, latexmt_configure
@@ -73,81 +74,123 @@ templates = {
 }
 
 
+def job_json(job: Job) -> dict[str, Any]:
+    return {
+        'id': job.id,
+        'src_lang': job.src_lang,
+        'tgt_lang': job.tgt_lang,
+        'status': job.status,
+        'download_url': job.download_url,
+    }
+
+
 def render_template_with_defaults(template_name: str, **context):
     template, defaults = templates[template_name]
     return render_template(template, **defaults, **context)
 
 
 @app.route('/')
-def direct():
-    return render_template_with_defaults('index', jobs=get_jobs())
+def index():
+    return render_template_with_defaults('index', jobs=api_jobs())
 
 
-@app.route('/api/jobs')
-def get_jobs():
-    if not app.config[ConfigKey.ENABLE_JOBS]:
-        return jsonify('Jobs are not enabled'), 403
-
-    return [{'id': id, 'status': job.status, 'download_url': job.download_url}
-            for (id, job) in db.get_jobs().items() if job.status != 'archived']
-
-
-@app.route('/submit', methods=['POST'])
-def submit_job():
-    if not app.config[ConfigKey.ENABLE_JOBS]:
-        return jsonify('Jobs are not enabled'), 403
-
-    document = request.files['document']
+@app.route('/api/translate', methods=['POST'])
+def api_translate():
+    input_text = '\n'.join(request.form['input_text'].splitlines())
     src_lang = request.form['src_lang']
     tgt_lang = request.form['tgt_lang']
-    glossary = request.form['glossary']
+    glossary = request.form['glossary'] if 'glossary' in request.form else ''
 
-    job = Job(0,
-              status='new',
-              src_lang=src_lang,
-              tgt_lang=tgt_lang,
-              download_url=None,
-              glossary=glossary)
-    job = db.create_job(job)
+    params = Job(0,
+                 status='new',
+                 src_lang=src_lang,
+                 tgt_lang=tgt_lang,
+                 download_url=None,
+                 glossary=glossary)
 
-    upload_dir = upload_base().joinpath(str(job.id))
-    ensure_dir(upload_dir)
-    input_dir = input_base().joinpath(str(job.id))
-    ensure_dir(input_dir)
+    # log_file = log_base().joinpath(str(params.id) + '.log')
+    # file_handler = logging.FileHandler(log_file)
+    # file_handler.setFormatter(logging.getLogger().handlers[0].formatter)
 
-    assert document.filename is not None
-    upload_path = upload_dir.joinpath(document.filename)
-    document.save(upload_path)
+    # job_logger = logging.getLogger(f'Job {params.id}')
+    # job_logger.addHandler(file_handler)
 
-    log_file = log_base().joinpath(str(job.id) + '.log')
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setFormatter(logging.getLogger().handlers[0].formatter)
+    return translate_single(input_text, params)
 
-    job_logger = logging.getLogger(f'Job {job.id}')
-    job_logger.addHandler(file_handler)
 
-    if upload_path.name.endswith('.zip'):
-        with ZipFile(upload_path, mode='r') as upload_zip:
-            upload_zip.extractall(path=input_dir)
+@app.route('/api/jobs', methods=['GET', 'POST'])
+def api_jobs():
+    if not app.config[ConfigKey.ENABLE_JOBS]:
+        return jsonify('Jobs are not enabled'), 403
+
+    if request.method == 'GET':
+        return [job_json(job) for job in db.get_jobs().values()
+                if job.status != 'archived']
+
     else:
-        shutil.copy2(src=str(upload_path), dst=str(input_dir))
+        document = request.files['document']
+        src_lang = request.form['src_lang']
+        tgt_lang = request.form['tgt_lang']
+        glossary = request.form['glossary']
 
-    executor.submit(job_worker, job.id)
-    logger.info('Submitted', extra={'job': job})
+        job = Job(0,
+                  status='new',
+                  src_lang=src_lang,
+                  tgt_lang=tgt_lang,
+                  download_url=None,
+                  glossary=glossary)
+        job = db.create_job(job)
 
-    clear_upload(job.id)
+        upload_dir = upload_base().joinpath(str(job.id))
+        ensure_dir(upload_dir)
+        input_dir = input_base().joinpath(str(job.id))
+        ensure_dir(input_dir)
 
-    return render_template_with_defaults('index', jobs=db.get_jobs(), submitted_id=job.id)
+        assert document.filename is not None
+        upload_path = upload_dir.joinpath(document.filename)
+        document.save(upload_path)
+
+        log_file = log_base().joinpath(str(job.id) + '.log')
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setFormatter(logging.getLogger().handlers[0].formatter)
+
+        job_logger = logging.getLogger(f'Job {job.id}')
+        job_logger.addHandler(file_handler)
+
+        if upload_path.name.endswith('.zip'):
+            with ZipFile(upload_path, mode='r') as upload_zip:
+                upload_zip.extractall(path=input_dir)
+        else:
+            shutil.copy2(src=str(upload_path), dst=str(input_dir))
+
+        executor.submit(job_worker, job.id)
+        logger.info('Submitted', extra={'job': job})
+
+        clear_upload(job.id)
+
+        return jsonify(job_json(job))
 
 
-@app.route('/download/<job_id>')
-def download(job_id: str):
+@app.route('/api/jobs/<job_id>', methods=['GET'])
+def api_jobs_single(job_id: str):
     if not app.config[ConfigKey.ENABLE_JOBS]:
         return jsonify('Jobs are not enabled'), 403
 
     job = db.get_job(int(job_id))
     if job is None:
-        return 'nonexistent', 404
+        return 'Job does not exist', 404
+
+    return jsonify(job_json(job))
+
+
+@app.route('/api/jobs/<job_id>/download')
+def api_download(job_id: str):
+    if not app.config[ConfigKey.ENABLE_JOBS]:
+        return 'Jobs are not enabled', 403
+
+    job = db.get_job(int(job_id))
+    if job is None:
+        return 'Job does not exist', 404
 
     output_dir = output_base().joinpath(str(job.id))
     output_files = list(output_dir.rglob('*'))
@@ -175,30 +218,6 @@ def download(job_id: str):
     return response
 
 
-@app.route('/translate', methods=['POST'])
-def single():
-    input_text = '\n'.join(request.form['input_text'].splitlines())
-    src_lang = request.form['src_lang']
-    tgt_lang = request.form['tgt_lang']
-    glossary = request.form['glossary'] if 'glossary' in request.form else ''
-
-    params = Job(0,
-                 status='new',
-                 src_lang=src_lang,
-                 tgt_lang=tgt_lang,
-                 download_url=None,
-                 glossary=glossary)
-
-    # log_file = log_base().joinpath(str(params.id) + '.log')
-    # file_handler = logging.FileHandler(log_file)
-    # file_handler.setFormatter(logging.getLogger().handlers[0].formatter)
-
-    # job_logger = logging.getLogger(f'Job {params.id}')
-    # job_logger.addHandler(file_handler)
-
-    return translate_single(input_text, params)
-
-
 def ws_monitor(ws: WS, job_id: str, reader: subprocess.Popen):
     while ws.connected and ws.pong_received:
         time.sleep(1)
@@ -210,10 +229,11 @@ def ws_monitor(ws: WS, job_id: str, reader: subprocess.Popen):
         ws.close()
 
 
-@sock.route('/logs/<job_id>')
-def get_logs(ws: WS, job_id: str):
+@sock.route('/api/jobs/<job_id>/log')
+def api_logs(ws: WS, job_id: str):
     if not app.config[ConfigKey.ENABLE_JOBS]:
-        return jsonify('Jobs are not enabled'), 403
+        ws.close(message='Jobs are not enabled')
+        return
 
     job = db.get_job(int(job_id))
     if job is None:

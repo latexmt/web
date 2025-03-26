@@ -98,7 +98,7 @@ function showLogs(jobId) {
     return
   }
 
-  const socket = new WebSocket(`/logs/${jobId}`)
+  const socket = new WebSocket(`/api/jobs/${jobId}/log`)
 
   button_node = document.querySelector(`button[data-id="${jobId}"]`)
   const elem = document.createElement('tr')
@@ -170,7 +170,7 @@ async function translateText(event) {
   const formData = new FormData(event.submitter.form)
   setFormState('disabled', event.submitter.form.id)
   document.querySelector('#output_text').innerHTML = ''
-  const result = await fetch('/translate', {
+  const result = await fetch('/api/translate', {
     method: 'POST',
     body: formData,
   }).finally(() => setFormState('enabled', event.submitter.form.id))
@@ -185,7 +185,7 @@ async function translateDocument(event) {
   event.preventDefault()
 
   const formData = new FormData(event.submitter.form)
-  const response = await fetch('/submit', {
+  const response = await fetch('/api/jobs', {
     method: 'POST',
     body: formData,
   })

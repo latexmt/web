@@ -105,7 +105,7 @@ def job_worker(job_id: int):
             logger.warning('Error processing file',
                            extra={'err': err, 'input_file': input_file})
             job.status = 'error'
-            job.download_url = f'/download/{job.id}'
+            job.download_url = f'/api/jobs/{job.id}/download'
             job = db.update_job(job_id, job)
             break
 
@@ -122,7 +122,7 @@ def job_worker(job_id: int):
     if job.status != 'error':
         logger.info('Finished')
         job.status = 'done'
-        job.download_url = f'/download/{job.id}'
+        job.download_url = f'/api/jobs/{job.id}/download'
         job = db.update_job(job_id, job)
 
     processor.clear_processed()
