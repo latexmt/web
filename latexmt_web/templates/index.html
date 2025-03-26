@@ -61,12 +61,12 @@
       addFileDrop('#glossary')
       addFileDrop('#input_text')
 
-      document
-        .querySelector('form#translate-single')
+      document.forms
+        .namedItem('translate-text')
         .addEventListener('submit', translateSingle)
 
-      document
-        .querySelector('form#translate-job')
+      document.forms
+        .namedItem('translate-documents')
         .addEventListener('submit', translateJob)
 
       updateLoop()
@@ -83,11 +83,117 @@
       </a>
     </header>
     <main>
-      <div class="container">
-        <form id="translate-single">
-          <div class="row">
-            <div class="col-6 mb-3">
-              <div class="form-floating">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="tab-text"
+            data-bs-toggle="tab"
+            data-bs-target="#pane-text"
+            type="button"
+            role="tab"
+            aria-controls="pane-text"
+            aria-selected="true">
+            Text
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="tab-documents"
+            data-bs-toggle="tab"
+            data-bs-target="#pane-documents"
+            type="button"
+            role="tab"
+            aria-controls="pane-documents"
+            aria-selected="false">
+            Documents
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content my-4">
+        <div
+          class="tab-pane show active"
+          id="pane-text"
+          aria-labelledby="tab-text">
+          <form id="translate-text">
+            <div class="row">
+              <div class="col-6 mb-3">
+                <div class="form-floating">
+                  <select
+                    class="form-select"
+                    name="src_lang"
+                    id="src_lang"
+                    aria-label="Source language">
+                    <option value="de" selected>Deutsch</option>
+                    <option value="en">English</option>
+                  </select>
+                  <label for="src_lang">Source language</label>
+                </div>
+              </div>
+              <div class="col-6 mb-3">
+                <div class="form-floating">
+                  <select
+                    class="form-select"
+                    name="tgt_lang"
+                    id="tgt_lang"
+                    aria-label="Target language">
+                    <option value="de">Deutsch</option>
+                    <option value="en" selected>English</option>
+                  </select>
+                  <label for="tgt_lang">Target language</label>
+                </div>
+              </div>
+              <div class="col mb-3">
+                <label for="input" class="form-label">Input</label>
+                <textarea
+                  class="form-control"
+                  name="input_text"
+                  id="input_text"
+                  rows="10"
+                  placeholder="Type LaTeX code or drop a file here"></textarea>
+              </div>
+              <div class="col mb-3">
+                <label for="translation" class="form-label">Translation</label>
+                <textarea
+                  class="form-control"
+                  id="output_text"
+                  rows="10"
+                  readonly
+                  placeholder="Translated LaTeX code will appear here"></textarea>
+              </div>
+              <div class="col-12 mb-3">
+                <button type="submit" class="btn btn-primary">Translate</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div
+          class="tab-pane show-active"
+          id="pane-documents"
+          aria-labelledby="tab-documents">
+          <h2>Submit job</h2>
+          <form
+            onsubmit="submit_form(event)"
+            enctype="multipart/form-data"
+            class="row g-3"
+            id="translate-documents">
+            <div class="col-12 mb-3">
+              <label for="document" class="form-label"
+                >Input document (.tex or .zip)</label
+              >
+              <input
+                class="form-control"
+                type="file"
+                name="document"
+                id="document"
+                aria-describedby="documentHelp" />
+              <div id="documentHelp" class="form-text">
+                We'll never share your data with anyone else.
+              </div>
+            </div>
+            <div class="col">
+              <div class="mb-3 form-floating">
                 <select
                   class="form-select"
                   name="src_lang"
@@ -99,8 +205,8 @@
                 <label for="src_lang">Source language</label>
               </div>
             </div>
-            <div class="col-6 mb-3">
-              <div class="form-floating">
+            <div class="col">
+              <div class="mb-3 form-floating">
                 <select
                   class="form-select"
                   name="tgt_lang"
@@ -112,110 +218,41 @@
                 <label for="tgt_lang">Target language</label>
               </div>
             </div>
-            <div class="col mb-3">
-              <label for="input" class="form-label">Input</label>
-              <textarea
-                class="form-control"
-                name="input_text"
-                id="input_text"
-                rows="10"
-                placeholder="Type LaTeX code or drop a file here"></textarea>
-            </div>
-            <div class="col mb-3">
-              <label for="translation" class="form-label">Translation</label>
-              <textarea
-                class="form-control"
-                id="output_text"
-                rows="10"
-                readonly
-                placeholder="Translated LaTeX code will appear here"></textarea>
-            </div>
             <div class="col-12 mb-3">
-              <button type="submit" class="btn btn-primary">Translate</button>
+              <label for="glossary" class="form-label">Glossary</label>
+              <textarea
+                class="form-control"
+                name="glossary"
+                id="glossary"
+                rows="5"
+                aria-describedby="glossaryHelpBlock"
+                placeholder="phrase1,translation1"></textarea>
+              <div id="glossaryHelpBlock" class="form-text">
+                Drop a glossary file in CSV format (without header) here, or
+                type it in
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
-      <div class="container my-5">
-        <h2>Submit job</h2>
-        <form
-          onsubmit="submit_form(event)"
-          enctype="multipart/form-data"
-          class="row g-3"
-          id="translate-job">
-          <div class="col-12 mb-3">
-            <label for="document" class="form-label"
-              >Input document (.tex or .zip)</label
-            >
-            <input
-              class="form-control"
-              type="file"
-              name="document"
-              id="document"
-              aria-describedby="documentHelp" />
-            <div id="documentHelp" class="form-text">
-              We'll never share your data with anyone else.
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3 form-floating">
-              <select
-                class="form-select"
-                name="src_lang"
-                id="src_lang"
-                aria-label="Source language">
-                <option value="de" selected>Deutsch</option>
-                <option value="en">English</option>
-              </select>
-              <label for="src_lang">Source language</label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3 form-floating">
-              <select
-                class="form-select"
-                name="tgt_lang"
-                id="tgt_lang"
-                aria-label="Target language">
-                <option value="de">Deutsch</option>
-                <option value="en" selected>English</option>
-              </select>
-              <label for="tgt_lang">Target language</label>
-            </div>
-          </div>
-          <div class="col-12 mb-3">
-            <label for="glossary" class="form-label">Glossary</label>
-            <textarea
-              class="form-control"
-              name="glossary"
-              id="glossary"
-              rows="5"
-              aria-describedby="glossaryHelpBlock"
-              placeholder="phrase1,translation1"></textarea>
-            <div id="glossaryHelpBlock" class="form-text">
-              Drop a glossary file in CSV format (without header) here, or type
-              it in
-            </div>
-          </div>
 
-          <div class="col-12">
-            <button type="submit" class="btn btn-secondary">Submit job</button>
+            <div class="col-12">
+              <button type="submit" class="btn btn-secondary">
+                Submit job
+              </button>
+            </div>
+          </form>
+          <div class="container my-5">
+            <h3>Active jobs</h3>
+            <table class="table" id="job-list">
+              <thead>
+                <tr>
+                  <th scope="col">Job ID</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
-        </form>
-      </div>
-
-      <div class="container my-5">
-        <h3>Active jobs</h3>
-        <table class="table" id="job-list">
-          <thead>
-            <tr>
-              <th scope="col">Job ID</th>
-              <th scope="col">Status</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        </div>
       </div>
     </main>
     <footer class="pt-5 my-5 text-body-secondary border-top">
