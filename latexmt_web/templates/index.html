@@ -104,10 +104,10 @@
       white-space: pre;
       overflow-x: scroll;
       display: block;
-      width: 800px;
-      height: 600px;
+      width: 100%;
+      height: 300px;
       padding-bottom: 10px;
-      resize: both;
+      resize: vertical;
     }
 
     .p-0.accordion-body > textarea {
@@ -115,6 +115,10 @@
       border-left: 0;
       border-right: 0;
       border-radius: 0;
+    }
+
+    #job-list {
+      table-layout: fixed;
     }
   </style>
   <script type="text/javascript"
@@ -253,6 +257,11 @@
           <hr />
           <h3>Active jobs</h3>
           <table class="table" id="job-list">
+            <colgroup>
+              <col style="width: 2cm">
+              <col>
+              <col style="width: 2cm">
+            </colgroup>
             <thead>
               <tr>
                 <th scope="col">Job ID</th>
