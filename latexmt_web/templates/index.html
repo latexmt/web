@@ -1,21 +1,84 @@
+{% macro langselect(id_prefix) -%}
+  <div class="row">
+    <div class="col-sm-6 mb-3">
+      <div class="form-floating">
+        <select class="form-select sync-value"
+                data-sync-id="src_lang"
+                id="{{ id_prefix }}-src_lang"
+                name="src_lang"
+                aria-label="Source language">
+          <option value="de" selected>Deutsch</option>
+          <option value="en">English</option>
+        </select>
+        <label for="{{ id_prefix }}-src_lang">Source language</label>
+      </div>
+    </div>
+    <div class="col-sm-6 mb-3">
+      <div class="form-floating">
+        <select class="form-select sync-value"
+                data-sync-id="tgt_lang"
+                id="{{ id_prefix }}-tgt_lang"
+                name="tgt_lang"
+                aria-label="Target language">
+          <option value="de">Deutsch</option>
+          <option value="en" selected>English</option>
+        </select>
+        <label for="{{ id_prefix }}-tgt_lang">Target language</label>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+{% macro glossary(id_prefix) -%}
+  <div class="col-12 mb-3 accordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="false"
+                aria-controls="collapseOne">
+          <label for="{{ id_prefix }}-glossary" class="m-0 form-label">Glossary</label>
+        </button>
+      </h2>
+      <div id="collapseOne"
+           class="accordion-collapse collapse"
+           aria-labelledby="headingOne"
+           data-bs-parent="#accordionExample">
+        <div class="p-0 accordion-body">
+          <textarea class="form-control filedrop-target sync-value"
+                    id="{{ id_prefix }}-glossary"
+                    data-sync-id="glossary"
+                    name="glossary"
+                    rows="5"
+                    aria-describedby="glossaryHelpBlock"
+                    placeholder="phrase1,translation1"></textarea>
+          <div id="glossaryHelpBlock" class="m-2 form-text">
+            Drop a glossary file in CSV format (without header) here,
+            or type it in
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+{% macro trans_params(id_prefix) -%}
+  {{ langselect(id_prefix) }}
+  {{ glossary(id_prefix) }}
+{% endmacro %}
 <!DOCTYPE html>
-
 <head>
   <title>LaTeXMT Web</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="Calvin Hoy" />
-
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous" />
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous" />
+  <script id="MathJax-script"
+          async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -46,15 +109,34 @@
       padding-bottom: 10px;
       resize: both;
     }
-  </style>
 
-  <script
-    type="text/javascript"
-    src="{{ url_for('static', filename='js/latexmt.js') }}"></script>
+    .p-0.accordion-body > textarea {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
+    }
+  </style>
+  <script type="text/javascript"
+          src="{{ url_for('static', filename='js/latexmt.js') }}"></script>
   <script type="text/javascript">
     const updateLoopInterval = 3000
     function updateLoop() {
       updateJobTable().finally(() => setTimeout(updateLoop, updateLoopInterval))
+    }
+
+    /**
+    * @param {FocusEvent} event
+    */
+    function syncValue(event) {
+      /**
+      * @type {string}
+      */
+      const syncId = event.target.attributes['data-sync-id'].value
+      const syncValue = event.target.value
+
+      document.querySelectorAll(`[data-sync-id='${syncId}']`)
+        .forEach(elem => elem.value = syncValue)
     }
 
     window.onload = () => {
@@ -68,6 +150,13 @@
         .namedItem('translate-documents')
         .addEventListener('submit', translateDocument)
 
+      document
+        .querySelectorAll('.sync-value')
+        .forEach(elem => {
+          elem.addEventListener('change', syncValue)
+          elem.addEventListener('DOMSubtreeModified', syncValue)
+        })
+
       updateLoop()
     }
   </script>
@@ -75,161 +164,77 @@
 <body>
   <div style="max-width: 1200px" class="mx-auto p-4 py-md-5">
     <header class="d-flex align-items-center pb-3 mb-3 border-bottom">
-      <a
-        href="/"
-        class="d-flex align-items-center text-body-emphasis text-decoration-none">
+      <a href="/"
+         class="d-flex align-items-center text-body-emphasis text-decoration-none">
         <span class="fs-4">\(\LaTeX{}\)MT Web</span>
       </a>
     </header>
     <main>
       <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link active"
-            id="tab-text"
-            data-bs-toggle="tab"
-            data-bs-target="#pane-text"
-            type="button"
-            role="tab"
-            aria-controls="pane-text"
-            aria-selected="true">
-            Text
-          </button>
+          <button class="nav-link active"
+                  id="tab-text"
+                  data-bs-toggle="tab"
+                  data-bs-target="#pane-text"
+                  type="button"
+                  role="tab"
+                  aria-controls="pane-text"
+                  aria-selected="true">Text</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="tab-documents"
-            data-bs-toggle="tab"
-            data-bs-target="#pane-documents"
-            type="button"
-            role="tab"
-            aria-controls="pane-documents"
-            aria-selected="false">
-            Documents
-          </button>
+          <button class="nav-link"
+                  id="tab-documents"
+                  data-bs-toggle="tab"
+                  data-bs-target="#pane-documents"
+                  type="button"
+                  role="tab"
+                  aria-controls="pane-documents"
+                  aria-selected="false">Documents</button>
         </li>
       </ul>
       <div class="tab-content my-4">
-        <div
-          class="tab-pane show active"
-          id="pane-text"
-          aria-labelledby="tab-text">
+        <div class="tab-pane show active"
+             id="pane-text"
+             aria-labelledby="tab-text">
           <form id="translate-text" enctype="multipart/form-data">
-            <div class="row">
-              <div class="col-sm-6 mb-3">
-                <div class="form-floating">
-                  <select
-                    class="form-select"
-                    name="src_lang"
-                    aria-label="Source language">
-                    <option value="de" selected>Deutsch</option>
-                    <option value="en">English</option>
-                  </select>
-                  <label for="src_lang">Source language</label>
-                </div>
-              </div>
-              <div class="col-sm-6 mb-3">
-                <div class="form-floating">
-                  <select
-                    class="form-select"
-                    name="tgt_lang"
-                    aria-label="Target language">
-                    <option value="de">Deutsch</option>
-                    <option value="en" selected>English</option>
-                  </select>
-                  <label for="tgt_lang">Target language</label>
-                </div>
-              </div>
-            </div>
+            {{ trans_params("text") }}
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="input" class="form-label">Input</label>
-                <textarea
-                  class="form-control filedrop-target"
-                  name="input_text"
-                  id="input_text"
-                  rows="10"
-                  placeholder="Type LaTeX code or drop a file here"></textarea>
+                <textarea class="form-control filedrop-target"
+                          name="input_text"
+                          id="input_text"
+                          rows="10"
+                          placeholder="Type LaTeX code or drop a file here"></textarea>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="translation" class="form-label">Translation</label>
-                <textarea
-                  class="form-control"
-                  id="output_text"
-                  rows="10"
-                  readonly
-                  placeholder="Translated LaTeX code will appear here"></textarea>
+                <textarea class="form-control"
+                          id="output_text"
+                          rows="10"
+                          readonly
+                          placeholder="Translated LaTeX code will appear here"></textarea>
               </div>
             </div>
-            <div class="col-12 mb-3">
+            <div class="col-12">
               <button type="submit" class="btn btn-primary">Translate</button>
             </div>
           </form>
         </div>
-        <div
-          class="tab-pane"
-          id="pane-documents"
-          aria-labelledby="tab-documents">
+        <div class="tab-pane" id="pane-documents" aria-labelledby="tab-documents">
           <form id="translate-documents" enctype="multipart/form-data">
-            <div class="row">
-              <div class="col-sm-6 mb-3">
-                <div class="form-floating">
-                  <select
-                    class="form-select"
-                    name="src_lang"
-                    aria-label="Source language">
-                    <option value="de" selected>Deutsch</option>
-                    <option value="en">English</option>
-                  </select>
-                  <label for="src_lang">Source language</label>
-                </div>
-              </div>
-              <div class="col-sm-6 mb-3">
-                <div class="form-floating">
-                  <select
-                    class="form-select"
-                    name="tgt_lang"
-                    aria-label="Target language">
-                    <option value="de">Deutsch</option>
-                    <option value="en" selected>English</option>
-                  </select>
-                  <label for="tgt_lang">Target language</label>
-                </div>
-              </div>
-            </div>
+            {{ trans_params("documents") }}
             <div class="col-12 mb-3">
-              <label for="document" class="form-label"
-                >Input document (.tex or .zip)</label
-              >
-              <input
-                class="form-control"
-                type="file"
-                name="document"
-                id="document"
-                aria-describedby="documentHelp" />
-              <div id="documentHelp" class="form-text">
-                We'll never share your data with anyone else.
-              </div>
+              <label for="document" class="form-label">Input document (.tex or .zip)</label>
+              <input class="form-control"
+                     type="file"
+                     name="document"
+                     id="document"
+                     aria-describedby="documentHelp" />
+              <div id="documentHelp" class="form-text">We'll never share your data with anyone else.</div>
             </div>
-            <div class="col-12 mb-3">
-              <label for="glossary" class="form-label">Glossary</label>
-              <textarea
-                class="form-control filedrop-target"
-                name="glossary"
-                rows="5"
-                aria-describedby="glossaryHelpBlock"
-                placeholder="phrase1,translation1"></textarea>
-              <div id="glossaryHelpBlock" class="form-text">
-                Drop a glossary file in CSV format (without header) here, or
-                type it in
-              </div>
-            </div>
-
             <div class="col-12">
-              <button type="submit" class="btn btn-secondary">
-                Submit job
-              </button>
+              <button type="submit" class="btn btn-secondary">Submit job</button>
             </div>
           </form>
           <hr />
@@ -242,7 +247,8 @@
                 <th scope="col"></th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+            </tbody>
           </table>
         </div>
       </div>
@@ -252,8 +258,7 @@
       <a href="https://git.uibk.ac.at/csaz9385/latexmt">Source Code</a>
     </footer>
   </div>
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+          crossorigin="anonymous"></script>
 </body>
