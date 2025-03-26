@@ -35,14 +35,14 @@
         <button class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#collapseOne"
+                data-bs-target=".glossary-collapse"
                 aria-expanded="false"
-                aria-controls="collapseOne">
+                aria-controls="{{ id_prefix }}-glossary-collapse">
           <label for="{{ id_prefix }}-glossary" class="m-0 form-label">Glossary</label>
         </button>
       </h2>
-      <div id="collapseOne"
-           class="accordion-collapse collapse"
+      <div id="{{ id_prefix }}-glossary-collapse"
+           class="accordion-collapse collapse glossary-collapse"
            aria-labelledby="headingOne"
            data-bs-parent="#accordionExample">
         <div class="p-0 accordion-body">
@@ -126,7 +126,7 @@
     }
 
     /**
-    * @param {FocusEvent} event
+    * @param {Event} event
     */
     function syncValue(event) {
       /**
@@ -150,11 +150,24 @@
         .namedItem('translate-documents')
         .addEventListener('submit', translateDocument)
 
+      // watch for input value changes
+      const syncObserver = new MutationObserver((mutationList, observer) => {
+        for (const mutation of mutationList) {
+          if (mutation.type === 'childList') {
+            syncValue(mutation.target)
+          }
+        }
+      })
       document
         .querySelectorAll('.sync-value')
         .forEach(elem => {
+          // watch .value
           elem.addEventListener('change', syncValue)
-          elem.addEventListener('DOMSubtreeModified', syncValue)
+          // watch .innerHTML
+          syncObserver.observe(elem, {
+            characterData: true,
+            subtree: true,
+          })
         })
 
       updateLoop()
