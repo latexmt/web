@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.insert(1, str(Path(__file__).parent.parent))
 
 # autopep8: off - the stuff at the top needs to STAY at the top
-from flask import Flask, render_template, request, send_file
+from flask import Flask, jsonify, render_template, request, send_file
 from flask_executor import Executor
 from flask_sock import Sock, Server as WS
 
@@ -66,7 +66,8 @@ logging.getLogger().setLevel(app.config[ConfigKey.LOG_LEVEL])
 # templates and their defaults
 templates = {
     'index': ('index.html',
-              {'languages': ['de', 'en'],
+              {'show_documents_tab': app.config[ConfigKey.ENABLE_JOBS],
+               'languages': ['de', 'en'],
                'src_default': 'de',
                'tgt_default': 'en'}),
 }
@@ -84,12 +85,18 @@ def direct():
 
 @app.route('/api/jobs')
 def get_jobs():
+    if not app.config[ConfigKey.ENABLE_JOBS]:
+        return jsonify('Jobs are not enabled'), 403
+
     return [{'id': id, 'status': job.status, 'download_url': job.download_url}
             for (id, job) in db.get_jobs().items() if job.status != 'archived']
 
 
 @app.route('/submit', methods=['POST'])
 def submit_job():
+    if not app.config[ConfigKey.ENABLE_JOBS]:
+        return jsonify('Jobs are not enabled'), 403
+
     document = request.files['document']
     src_lang = request.form['src_lang']
     tgt_lang = request.form['tgt_lang']
@@ -133,17 +140,11 @@ def submit_job():
     return render_template_with_defaults('index', jobs=db.get_jobs(), submitted_id=job.id)
 
 
-@app.route('/status/<job_id>')
-def status(job_id: str):
-    job = db.get_job(int(job_id))
-    if job is None:
-        return 'nonexistent', 404
-
-    return job.status
-
-
 @app.route('/download/<job_id>')
 def download(job_id: str):
+    if not app.config[ConfigKey.ENABLE_JOBS]:
+        return jsonify('Jobs are not enabled'), 403
+
     job = db.get_job(int(job_id))
     if job is None:
         return 'nonexistent', 404
@@ -211,6 +212,9 @@ def ws_monitor(ws: WS, job_id: str, reader: subprocess.Popen):
 
 @sock.route('/logs/<job_id>')
 def get_logs(ws: WS, job_id: str):
+    if not app.config[ConfigKey.ENABLE_JOBS]:
+        return jsonify('Jobs are not enabled'), 403
+
     job = db.get_job(int(job_id))
     if job is None:
         ws.send(json.dumps({'error': f'Job {job_id} does not exist'}))

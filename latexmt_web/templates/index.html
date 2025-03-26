@@ -165,16 +165,18 @@
                   aria-controls="pane-text"
                   aria-selected="true">Text</button>
         </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link"
-                  id="tab-documents"
-                  data-bs-toggle="tab"
-                  data-bs-target="#pane-documents"
-                  type="button"
-                  role="tab"
-                  aria-controls="pane-documents"
-                  aria-selected="false">Documents</button>
-        </li>
+        {% if show_documents_tab %}
+          <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="tab-documents"
+                    data-bs-toggle="tab"
+                    data-bs-target="#pane-documents"
+                    type="button"
+                    role="tab"
+                    aria-controls="pane-documents"
+                    aria-selected="false">Documents</button>
+          </li>
+        {% endif %}
       </ul>
       <div class="tab-content my-4">
         <div class="tab-pane show active"
@@ -205,41 +207,43 @@
             </div>
           </form>
         </div>
-        <div class="tab-pane" id="pane-documents" aria-labelledby="tab-documents">
-          <form id="translate-documents" enctype="multipart/form-data">
-            {{ trans_params("documents") }}
-            <div class="col-12 mb-3">
-              <label for="document" class="form-label">Input document (.tex or .zip)</label>
-              <input class="form-control"
-                     type="file"
-                     name="document"
-                     id="document"
-                     aria-describedby="documentHelp" />
-              <div id="documentHelp" class="form-text">We'll never share your data with anyone else.</div>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-secondary">Submit job</button>
-            </div>
-          </form>
-          <hr />
-          <h3>Active jobs</h3>
-          <table class="table" id="job-list">
-            <colgroup>
-              <col style="width: 2cm">
-              <col>
-              <col style="width: 2cm">
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col">Job ID</th>
-                <th scope="col">Status</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+        {% if show_documents_tab %}
+          <div class="tab-pane" id="pane-documents" aria-labelledby="tab-documents">
+            <form id="translate-documents" enctype="multipart/form-data">
+              {{ trans_params("documents") }}
+              <div class="col-12 mb-3">
+                <label for="document" class="form-label">Input document (.tex or .zip)</label>
+                <input class="form-control"
+                       type="file"
+                       name="document"
+                       id="document"
+                       aria-describedby="documentHelp" />
+                <div id="documentHelp" class="form-text">We'll never share your data with anyone else.</div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-secondary">Submit job</button>
+              </div>
+            </form>
+            <hr />
+            <h3>Active jobs</h3>
+            <table class="table" id="job-list">
+              <colgroup>
+                <col style="width: 2cm">
+                <col>
+                <col style="width: 2cm">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">Job ID</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
       </div>
     </main>
     <footer class="pt-5 my-5 text-body-secondary border-top">
