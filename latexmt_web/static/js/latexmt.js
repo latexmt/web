@@ -102,7 +102,8 @@ function showLogs(jobId) {
 
   button_node = document.querySelector(`button[data-id="${jobId}"]`)
   const elem = document.createElement('tr')
-  elem.innerHTML = '<td colspan=3><code></code></td>'
+  elem.innerHTML =
+    '<td class="table-active" colspan=3><code class="job-log"></code></td>'
   button_node.parentElement.parentElement.parentElement.insertBefore(
     elem,
     button_node.parentElement.parentElement.nextSibling
