@@ -9,7 +9,7 @@
     "one of [auto, awesome]",
     "'auto' selects translator's built-in aligner if supported"
   ],
-  "aligner": "auto",
+  "aligner": "awesome",
 
   "_comment2": "may be omitted or set to `null` to disable formatting",
   "texfmt_bin": "/usr/bin/tex-fmt",
