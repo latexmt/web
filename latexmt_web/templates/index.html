@@ -2,28 +2,34 @@
   <div class="row">
     <div class="col-sm-6 mb-3">
       <div class="form-floating">
-        <select class="form-select sync-value"
-                data-sync-id="src_lang"
-                id="{{ id_prefix }}-src_lang"
-                name="src_lang"
-                aria-label="Source language">
-          <option value="de" selected>Deutsch</option>
-          <option value="en">English</option>
-        </select>
-        <label for="{{ id_prefix }}-src_lang">Source language</label>
+        <input class="form-control sync-value"
+               type="text"
+               value="Helsinki-NLP/opus-mt-de-en"
+               data-sync-id="model"
+               id="{{ id_prefix }}-model"
+               name="model"
+               placeholder=""
+               aria-label="Translation model"
+               list="models" />
+        <label for="{{ id_prefix }}-model">Translation model</label>
+        <datalist id="models">
+          <option value="Helsinki-NLP/opus-mt-de-en"></option>
+          <option value="Helsinki-NLP/opus-mt-en-de"></option>
+          <option value="Helsinki-NLP/opus-mt-en-ine"></option>
+          <option value="google-bert/bert-base-multilingual-cased"></option>
+        </datalist>
       </div>
     </div>
     <div class="col-sm-6 mb-3">
       <div class="form-floating">
-        <select class="form-select sync-value"
-                data-sync-id="tgt_lang"
-                id="{{ id_prefix }}-tgt_lang"
-                name="tgt_lang"
-                aria-label="Target language">
-          <option value="de">Deutsch</option>
-          <option value="en" selected>English</option>
-        </select>
-        <label for="{{ id_prefix }}-tgt_lang">Target language</label>
+        <input class="form-control sync-value"
+               type="text"
+               data-sync-id="input-prefix"
+               id="{{ id_prefix }}-input-prefix"
+               name="input-prefix"
+               placeholder=""
+               aria-label="Input prefix (for multilingual models)" />
+        <label for="{{ id_prefix }}-input-prefix">Input prefix (for multilingual models)</label>
       </div>
     </div>
   </div>
@@ -31,7 +37,7 @@
 {% macro glossary(id_prefix) -%}
   <div class="col-12 mb-3 accordion">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="headingOne">
+      <h2 class="accordion-header" id="{{ id_prefix }}-glossary-heading">
         <button class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
@@ -43,17 +49,16 @@
       </h2>
       <div id="{{ id_prefix }}-glossary-collapse"
            class="accordion-collapse collapse glossary-collapse"
-           aria-labelledby="headingOne"
-           data-bs-parent="#accordionExample">
+           aria-labelledby="{{ id_prefix }}-glossary-heading">
         <div class="p-0 accordion-body">
           <textarea class="form-control filedrop-target sync-value"
                     id="{{ id_prefix }}-glossary"
                     data-sync-id="glossary"
                     name="glossary"
                     rows="5"
-                    aria-describedby="glossaryHelpBlock"
+                    aria-describedby="{{ id_prefix }}-glossary-help-block"
                     placeholder="phrase1,translation1"></textarea>
-          <div id="glossaryHelpBlock" class="m-2 form-text">
+          <div id="{{ id_prefix }}-glossary-help-block" class="m-2 form-text">
             Drop a glossary file in CSV format (without header) here,
             or type it in
           </div>

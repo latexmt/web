@@ -8,7 +8,7 @@ from typing import Optional
 class Job:
     id: int
     status: str
-    src_lang: str
-    tgt_lang: str
+    model: str
+    input_prefix: str
     download_url: Optional[str]
     glossary: str = ''

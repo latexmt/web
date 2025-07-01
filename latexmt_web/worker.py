@@ -21,8 +21,10 @@ def translate_single(input_text: str, params: Job) -> str:
     job_logger = logging.getLogger('translate_single')
     logger = job_logger.getChild(__name__)
 
-    lock, translator, aligner = get_translator_aligner(params.src_lang, params.tgt_lang,
-                                                       parent_logger=job_logger)
+    lock, translator, aligner = get_translator_aligner('FIXME', 'FIXME',
+                                                       parent_logger=job_logger,
+                                                       opus_model_base=params.model,
+                                                       opus_input_prefix=params.input_prefix)
 
     glossary = load_glossary(lines=params.glossary.splitlines())
 
@@ -84,8 +86,10 @@ def job_worker(job_id: int):
     input_dir = input_base().joinpath(str(job.id))
     output_dir = output_base().joinpath(str(job.id))
 
-    lock, translator, aligner = get_translator_aligner(job.src_lang, job.tgt_lang,
-                                                       parent_logger=job_logger)
+    lock, translator, aligner = get_translator_aligner('FIXME', 'FIXME',
+                                                       parent_logger=job_logger,
+                                                       opus_model_base=job.model,
+                                                       opus_input_prefix=job.input_prefix)
 
     processor = DocumentTranslator(translator, aligner,
                                    glossary=glossary,

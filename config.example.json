@@ -9,17 +9,11 @@
     "one of [auto, awesome]",
     "'auto' selects translator's built-in aligner if supported"
   ],
-  "aligner": "awesome",
+  "aligner": "auto",
 
-  "_comment2": [
-    "may point to a local model (absolute path or ./[...])",
-    "or one on HuggingFace"
-  ],
-  "opus_model": "Helsinki-NLP/opus-mt-{src}-{tgt}",
-
-  "_comment3": "may be omitted or set to `null` to disable formatting",
+  "_comment2": "may be omitted or set to `null` to disable formatting",
   "texfmt_bin": "/usr/bin/tex-fmt",
-  "_comment4": "may be omitted or set to `null` to use tex-fmt's defaults",
+  "_comment3": "may be omitted or set to `null` to use tex-fmt's defaults",
   "texfmt_conf": "/etc/tex-fmt.conf",
 
   "enable_jobs": true

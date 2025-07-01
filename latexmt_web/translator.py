@@ -11,7 +11,7 @@ from latexmt_core.alignment import Aligner
 from latexmt_core.translation import Translator
 
 __translator_aligners_mutex = Lock()
-__translator_aligners: dict[tuple[str, str],
+__translator_aligners: dict[tuple[str, str, str],
                             tuple[Lock, Translator, Aligner]] = {}
 
 
@@ -20,20 +20,25 @@ def get_translator_aligner(src_lang: str, tgt_lang: str, **kwargs) -> tuple[Lock
     config = current_app.config
 
     logger = logger_from_kwargs(**kwargs)
+    opus_model_base = kwargs.get('opus_model_base', '')
+    opus_input_prefix = kwargs.get('opus_input_prefix', '')
 
     with __translator_aligners_mutex:
-        if (src_lang, tgt_lang) not in __translator_aligners:
-            logger.info(f'Initialising translator for {src_lang}-{tgt_lang}...')  # nopep8
-
+        if (src_lang, tgt_lang, opus_model_base) not in __translator_aligners:
             translator, aligner = get_translator_aligner_base(
                 src_lang=src_lang, tgt_lang=tgt_lang,
                 trans_type=config[ConfigKey.TRANSLATOR],
                 align_type=config[ConfigKey.ALIGNER],
-                opus_model_base=config[ConfigKey.OPUS_MODEL],
-                logger=logger
+                logger=logger,
+                **kwargs
             )
 
-            __translator_aligners[(src_lang, tgt_lang)] = \
+            __translator_aligners[(src_lang, tgt_lang, opus_model_base)] = \
                 (Lock(), translator, aligner)
 
-    return __translator_aligners[(src_lang, tgt_lang)]
+    lock, translator, aligner = __translator_aligners[(src_lang, tgt_lang, opus_model_base)]
+    from latexmt_core.translation.opus import OpusTransformersTranslatorAligner
+    if isinstance(translator, OpusTransformersTranslatorAligner):
+        translator.input_prefix = kwargs.get('opus_input_prefix', '')
+    
+    return lock, translator, aligner

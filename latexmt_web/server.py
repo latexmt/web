@@ -66,19 +66,20 @@ logging.getLogger().setLevel(app.config[ConfigKey.LOG_LEVEL])
 
 # templates and their defaults
 templates = {
-    'index': ('index.html',
-              {'show_documents_tab': app.config[ConfigKey.ENABLE_JOBS],
-               'languages': ['de', 'en'],
-               'src_default': 'de',
-               'tgt_default': 'en'}),
+    'index': (
+        'index.html',
+        {
+            'show_documents_tab': app.config[ConfigKey.ENABLE_JOBS]
+        }
+    ),
 }
 
 
 def job_json(job: Job) -> dict[str, Any]:
     return {
         'id': job.id,
-        'src_lang': job.src_lang,
-        'tgt_lang': job.tgt_lang,
+        'model': job.model,
+        'input_prefix': job.input_prefix,
         'status': job.status,
         'download_url': job.download_url,
     }
@@ -97,14 +98,14 @@ def index():
 @app.route('/api/translate', methods=['POST'])
 def api_translate():
     input_text = '\n'.join(request.form['input_text'].splitlines())
-    src_lang = request.form['src_lang']
-    tgt_lang = request.form['tgt_lang']
+    model = request.form['model']
+    input_prefix = request.form['input-prefix']
     glossary = request.form['glossary'] if 'glossary' in request.form else ''
 
     params = Job(0,
                  status='new',
-                 src_lang=src_lang,
-                 tgt_lang=tgt_lang,
+                 model=model,
+                 input_prefix=input_prefix,
                  download_url=None,
                  glossary=glossary)
 
@@ -129,14 +130,14 @@ def api_jobs():
 
     else:
         document = request.files['document']
-        src_lang = request.form['src_lang']
-        tgt_lang = request.form['tgt_lang']
+        model = request.form['model']
+        input_prefix = request.form['input-prefix']
         glossary = request.form['glossary']
 
         job = Job(0,
                   status='new',
-                  src_lang=src_lang,
-                  tgt_lang=tgt_lang,
+                  model=model,
+                  input_prefix=input_prefix,
                   download_url=None,
                   glossary=glossary)
         job = db.create_job(job)
