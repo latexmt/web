@@ -162,12 +162,53 @@ function addFileDrop(query) {
 }
 
 /**
+ * @param {FormData} formData
+ * @param {Record<string, string>} validateSet
+ * @returns {{ valid: string[], invalid: string[] }}
+ */
+function validateParams(formData, validateSet) {
+  let valid = []
+  let invalid = []
+
+  for (key in validateSet) {
+    const expected = validateSet[key]
+    const actual = formData.has(key) ? formData.get(key) : ''
+
+    if (actual.length > 0 && !actual.includes(expected)) {
+      invalid.push(key)
+    } else {
+      valid.push(key)
+    }
+  }
+
+  return { valid, invalid }
+}
+
+/**
  * @param {SubmitEvent} event
  */
 async function translateText(event) {
   event.preventDefault()
 
-  const formData = new FormData(event.submitter.form)
+  /**
+   * @type {HTMLFormElement}
+   */
+  const form = event.submitter.form
+  const formData = new FormData(form)
+
+  // TODO: proper form validation
+  const validateSet = { 'mask_placeholder': '%INDEX%' }
+  const { valid, invalid } = validateParams(formData, validateSet)
+  for (const id of invalid) {
+    document.querySelector(`[data-sync-id="${id}"]`).classList.add('is-invalid')
+  }
+  for (const id of valid) {
+    document.querySelector(`[data-sync-id="${id}"]`).classList.remove('is-invalid')
+  }
+  if (invalid.length > 0) {
+    return
+  }
+
   setFormState('disabled', event.submitter.form.id)
   document.querySelector('#output_text').innerHTML = ''
   const result = await fetch('/api/translate', {

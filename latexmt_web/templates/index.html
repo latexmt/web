@@ -23,8 +23,8 @@
       <div class="form-floating">
         <input class="form-control sync-value"
                type="text"
-               data-sync-id="input-prefix"
                id="{{ id_prefix }}-input-prefix"
+               data-sync-id="input-prefix"
                name="input-prefix"
                placeholder=""
                aria-label="Input prefix (for multilingual models)" />
@@ -36,20 +36,21 @@
 {% macro glossary(id_prefix) -%}
   <div class="col-12 mb-3 accordion">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="{{ id_prefix }}-glossary-heading">
+      <h2 class="accordion-header" id="{{ id_prefix }}-settings-heading">
         <button class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target=".glossary-collapse"
                 aria-expanded="false"
                 aria-controls="{{ id_prefix }}-glossary-collapse">
-          <label for="{{ id_prefix }}-glossary" class="m-0 form-label">Glossary</label>
+          <label for="{{ id_prefix }}-settings-heading" class="m-0 form-label">Settings</label>
         </button>
       </h2>
-      <div id="{{ id_prefix }}-glossary-collapse"
+      <div id="{{ id_prefix }}-settings-collapse"
            class="accordion-collapse collapse glossary-collapse"
-           aria-labelledby="{{ id_prefix }}-glossary-heading">
-        <div class="p-0 accordion-body">
+           aria-labelledby="{{ id_prefix }}-settings-heading">
+        <div class="accordion-body">
+          <label for="{{ id_prefix }}-glossary" class="m-0 form-label">Glossary</label>
           <textarea class="form-control filedrop-target sync-value"
                     id="{{ id_prefix }}-glossary"
                     data-sync-id="glossary"
@@ -58,8 +59,22 @@
                     aria-describedby="{{ id_prefix }}-glossary-help-block"
                     placeholder="phrase1,translation1"></textarea>
           <div id="{{ id_prefix }}-glossary-help-block" class="m-2 form-text">
-            Drop a glossary file in CSV format (without header) here,
+            Drop a glossary file in CSV format (without header) above,
             or type it in
+          </div>
+
+          <label for="{{ id_prefix }}-mask_placeholder" class="m-0 form-label">Non-text element placeholder</label>
+          <input type="text"
+                 class="form-control"
+                 id="{{ id_prefix }}-mask_placeholder"
+                 data-sync-id="mask_placeholder"
+                 name="mask_placeholder"
+                 aria-describedby="{{ id_prefix }}-mask_placeholder-help-block"
+                 placeholder="~%INDEX%_">
+          <div class="invalid-feedback">Must include %INDEX%</div>
+          <div id="{{ id_prefix }}-mask_placeholder-help-block" class="m-2 form-text">
+            Set the numbered placeholder to be used for non-text elements during machine translation (must include %INDEX%)<br>
+            Different placeholders may be more or less effective for different translation backends
           </div>
         </div>
       </div>
@@ -112,13 +127,6 @@
       height: 300px;
       padding-bottom: 10px;
       resize: vertical;
-    }
-
-    .p-0.accordion-body > textarea {
-      border-top: 0;
-      border-left: 0;
-      border-right: 0;
-      border-radius: 0;
     }
 
     #job-list {

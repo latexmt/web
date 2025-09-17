@@ -12,3 +12,4 @@ class Job:
     input_prefix: str
     download_url: Optional[str]
     glossary: str = ''
+    mask_placeholder: Optional[str] = None

@@ -101,13 +101,15 @@ def api_translate():
     model = request.form['model']
     input_prefix = request.form['input-prefix']
     glossary = request.form['glossary'] if 'glossary' in request.form else ''
+    mask_placeholder = request.form['mask_placeholder'] if 'mask_placeholder' in request.form else ''
 
     params = Job(0,
                  status='new',
                  model=model,
                  input_prefix=input_prefix,
                  download_url=None,
-                 glossary=glossary)
+                 glossary=glossary,
+                 mask_placeholder=mask_placeholder)
 
     # log_file = log_base().joinpath(str(params.id) + '.log')
     # file_handler = logging.FileHandler(log_file)
@@ -132,14 +134,16 @@ def api_jobs():
         document = request.files['document']
         model = request.form['model']
         input_prefix = request.form['input-prefix']
-        glossary = request.form['glossary']
+        glossary = request.form['glossary'] if 'glossary' in request.form else ''
+        mask_placeholder = request.form['mask_placeholder'] if 'mask_placeholder' in request.form else ''
 
         job = Job(0,
                   status='new',
                   model=model,
                   input_prefix=input_prefix,
                   download_url=None,
-                  glossary=glossary)
+                  glossary=glossary,
+                  mask_placeholder=mask_placeholder)
         job = db.create_job(job)
 
         upload_dir = upload_base().joinpath(str(job.id))

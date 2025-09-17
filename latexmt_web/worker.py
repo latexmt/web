@@ -6,6 +6,7 @@ import subprocess
 
 from latexmt_core.document_processor import DocumentTranslator
 from latexmt_core.glossary import load_glossary
+from latexmt_core.parsing.to_text import mask_str_default
 
 from . import db
 from .configure import ConfigKey
@@ -28,10 +29,15 @@ def translate_single(input_text: str, params: Job) -> str:
 
     glossary = load_glossary(lines=params.glossary.splitlines())
 
+    mask_str = mask_str_default
+    if params.mask_placeholder is not None and len(params.mask_placeholder.strip()) > 0:
+        mask_str = params.mask_placeholder.strip()
+
     processor = DocumentTranslator(translator, aligner,
                                    glossary=glossary,
                                    parent_logger=logger,
-                                   recurse_input=False)
+                                   recurse_input=False,
+                                   mask_str=mask_str)
 
     processor_in = StringIO(input_text)
     processor_in.name = str(processor_in)
