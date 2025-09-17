@@ -3,6 +3,7 @@ from flask import current_app
 from itertools import chain
 import logging
 import subprocess
+import traceback
 
 from latexmt_core.document_processor import DocumentTranslator
 from latexmt_core.glossary import load_glossary
@@ -53,7 +54,7 @@ def translate_single(input_text: str, params: Job) -> str:
             processor_out.flush()
             processor_out.seek(0)
     except Exception as err:
-        logger.warning('Error processing input', extra={'err': err})
+        logger.warning(f'Error processing input\n{err}\n{traceback.format_exc()}')
 
     output_text = processor_out.read()
     logger.info('Finished processing input')
@@ -112,8 +113,8 @@ def job_worker(job_id: int):
                     input_file.relative_to(input_dir).parent))
 
         except Exception as err:
-            logger.warning('Error processing file',
-                           extra={'err': err, 'input_file': input_file})
+            logger.warning(f'Error processing input\n{err}\n{traceback.format_exc()}',
+                           extra={'input_file': input_file})
             job.status = 'error'
             job.download_url = f'/api/jobs/{job.id}/download'
             job = db.update_job(job_id, job)
