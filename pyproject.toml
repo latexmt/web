@@ -1,8 +1,8 @@
 [project]
 name = "latexmt-web"
-version = "1.1.1"
+version = "1.1.2"
 authors = [
-  { name="Calvin Hoy", email="calvin.hoy@student.uibk.ac.at" },
+  { name="Calvin Hoy", email="calvin.hoy@screee.ee" },
 ]
 description = "Flask Web Interface for LaTeXMT"
 requires-python = ">=3.10"
@@ -19,8 +19,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://git.uibk.ac.at/csaz9385/latexmt-cli"
-Issues = "https://git.uibk.ac.at/csaz9385/latexmt-cli/issues"
+Homepage = "https://github.com/latexmt/web"
+Issues = "https://github.com/latexmt/web/issues"
 
 [tool.setuptools.package-data]
 "latexmt_web.templates" = ["*.html"]
