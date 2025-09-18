@@ -1,6 +1,6 @@
 [project]
 name = "latexmt-web"
-version = "1.1.0"
+version = "1.1.1"
 authors = [
   { name="Calvin Hoy", email="calvin.hoy@student.uibk.ac.at" },
 ]
