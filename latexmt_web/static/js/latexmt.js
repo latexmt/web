@@ -110,6 +110,73 @@ document.addEventListener('DOMContentLoaded', () => {
   try { enableTabInCode() } catch (e) { console.debug('enableTabInCode failed', e) }
 })
 
+// Ensure copy/cut from code elements copies only plain text (no HTML formatting)
+function enablePlainCopyFromCode() {
+  const selector = 'pre.filedrop-target code[contenteditable], code[contenteditable]'
+
+  function attach(elem) {
+    if (elem.__plain_copy_attached) return
+
+    const onCopy = function (e) {
+      try {
+        e.preventDefault()
+        const text = elem.innerText
+        if (e.clipboardData) {
+          e.clipboardData.setData('text/plain', text)
+        } else if (window.clipboardData) {
+          // IE fallback
+          window.clipboardData.setData('Text', text)
+        }
+      } catch (err) {
+        console.debug('plain copy failed', err)
+      }
+    }
+
+    const onCut = function (e) {
+      try {
+        e.preventDefault()
+        const sel = window.getSelection()
+        const text = sel ? sel.toString() : elem.innerText
+        if (e.clipboardData) {
+          e.clipboardData.setData('text/plain', text)
+        } else if (window.clipboardData) {
+          window.clipboardData.setData('Text', text)
+        }
+
+        // remove the selected contents
+        if (sel && sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0)
+          range.deleteContents()
+          sel.removeAllRanges()
+        }
+      } catch (err) {
+        console.debug('plain cut failed', err)
+      }
+    }
+
+    elem.addEventListener('copy', onCopy)
+    elem.addEventListener('cut', onCut)
+    elem.__plain_copy_attached = true
+  }
+
+  document.querySelectorAll(selector).forEach(attach)
+
+  const mo = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (!(node instanceof HTMLElement)) continue
+        if (node.matches && node.matches(selector)) attach(node)
+        node.querySelectorAll && node.querySelectorAll(selector).forEach(attach)
+      }
+    }
+  })
+  mo.observe(document.body, { childList: true, subtree: true })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try { enablePlainCopyFromCode() } catch (e) { console.debug('enablePlainCopyFromCode failed', e) }
+})
+
 function clearJobTable() {
   for (const e of getJobTable().children) {
     e.remove()
