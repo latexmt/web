@@ -85,9 +85,9 @@ def translate_single(input_text: str, src_lang: str, tgt_lang: str, params: Job)
 
         if texfmt_result.returncode != 0:
             logger.warning("Error formatting output")
-
-        output_text = texfmt_result.stdout.decode("utf-8")
-        logger.info("Formatted output")
+        else:
+            output_text = texfmt_result.stdout.decode("utf-8")
+            logger.info("Formatted output")
 
     return output_text
 
