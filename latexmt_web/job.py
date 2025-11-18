@@ -10,6 +10,8 @@ class Job:
     status: str
     model: str
     input_prefix: str
+    src_lang: str
+    tgt_lang: str
     download_url: Optional[str]
     glossary: str = ''
     mask_placeholder: Optional[str] = None

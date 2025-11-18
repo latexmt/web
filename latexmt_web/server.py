@@ -80,6 +80,8 @@ def job_json(job: Job) -> dict[str, Any]:
         'id': job.id,
         'model': job.model,
         'input_prefix': job.input_prefix,
+        'src_lang': job.src_lang,
+        'tgt_lang': job.tgt_lang,
         'status': job.status,
         'download_url': job.download_url,
     }
@@ -98,18 +100,24 @@ def index():
 @app.route('/api/translate', methods=['POST'])
 def api_translate():
     input_text = '\n'.join(request.form['input_text'].splitlines())
-    model = request.form['model']
-    input_prefix = request.form['input-prefix']
+    # model = request.form['model']
+    # input_prefix = request.form['input-prefix']
+
+    src_lang = request.form['src_lang']
+    tgt_lang = request.form['tgt_lang']
+
     glossary = request.form['glossary'] if 'glossary' in request.form else ''
     mask_placeholder = request.form['mask_placeholder'] if 'mask_placeholder' in request.form else ''
 
     params = Job(0,
                  status='new',
-                 model=model,
-                 input_prefix=input_prefix,
+                 model=None,
+                 input_prefix=None,
                  download_url=None,
                  glossary=glossary,
-                 mask_placeholder=mask_placeholder)
+                 mask_placeholder=mask_placeholder,
+                 src_lang=src_lang,
+                 tgt_lang=tgt_lang)
 
     # log_file = log_base().joinpath(str(params.id) + '.log')
     # file_handler = logging.FileHandler(log_file)
@@ -118,7 +126,7 @@ def api_translate():
     # job_logger = logging.getLogger(f'Job {params.id}')
     # job_logger.addHandler(file_handler)
 
-    return translate_single(input_text, params)
+    return translate_single(input_text, src_lang=src_lang, tgt_lang=tgt_lang, params=params)
 
 
 @app.route('/api/jobs', methods=['GET', 'POST'])
@@ -134,6 +142,8 @@ def api_jobs():
         document = request.files['document']
         model = request.form['model']
         input_prefix = request.form['input-prefix']
+        src_lang = request.form['src_lang']
+        tgt_lang = request.form['tgt_lang']
         glossary = request.form['glossary'] if 'glossary' in request.form else ''
         mask_placeholder = request.form['mask_placeholder'] if 'mask_placeholder' in request.form else ''
 
@@ -143,7 +153,10 @@ def api_jobs():
                   input_prefix=input_prefix,
                   download_url=None,
                   glossary=glossary,
-                  mask_placeholder=mask_placeholder)
+                  mask_placeholder=mask_placeholder,
+                  src_lang=src_lang,
+                  tgt_lang=tgt_lang)
+        
         job = db.create_job(job)
 
         upload_dir = upload_base().joinpath(str(job.id))

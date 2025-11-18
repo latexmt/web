@@ -19,6 +19,7 @@ class LatexMtConfig():
     texfmt_bin: Optional[str]
     texfmt_conf: Optional[str]
     enable_jobs: Optional[bool]
+    endpoint: Optional[str]
 
 
 class ConfigKey(StrEnum):
@@ -29,6 +30,7 @@ class ConfigKey(StrEnum):
     TEXFMT_BIN = 'LATEXMT_TEXFMT_BIN'
     TEXFMT_CONF = 'LATEXMT_TEXFMT_CONF'
     ENABLE_JOBS = 'LATEXMT_ENABLE_JOBS'
+    ENDPOINT = 'LATEXMT_ENDPOINT'
 
 
 def get_config_path() -> Path:
