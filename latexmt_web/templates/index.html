@@ -40,6 +40,36 @@
     </div>
   </div>
 {% endmacro %}
+{% macro deepl_token(id_prefix) -%}
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="card border-primary" style="border-width: 2px;">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-key me-2 text-primary" viewBox="0 0 16 16">
+              <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+              <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+            </svg>
+            <label for="{{ id_prefix }}-deepl_api_token" class="form-label mb-0 fw-bold">DeepL API Token (Optional)</label>
+          </div>
+          <input type="password"
+                 class="form-control sync-value mb-2"
+                 id="{{ id_prefix }}-deepl_api_token"
+                 data-sync-id="deepl_api_token"
+                 name="deepl_api_token"
+                 placeholder="Enter your DeepL API authentication key">
+          <div class="alert alert-info mb-0 py-2 px-3" style="font-size: 0.9rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle me-2" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+              <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+            </svg>
+            <strong>Tip:</strong> If not provided, translations will use the <strong><a href="https://huggingface.co/ModelSpace/GemmaX2-28-2B-v0.1">GemmaX-28-2B</a></strong> model running on our GPU cluster at the university. Translation may be slower in this mode.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
 {% macro glossary(id_prefix) -%}
   <div class="col-12 mb-3 accordion">
     <div class="accordion-item">
@@ -536,10 +566,10 @@
                 <textarea class="form-control"
                           id="output_text"
                           rows="10"
-                          readonly
                           placeholder="Translated LaTeX code will appear here"></textarea>
               </div>
             </div>
+            {{ deepl_token(id_prefix) }}
             <div class="col-12">
               <button type="submit" class="btn btn-primary">Translate</button>
             </div>

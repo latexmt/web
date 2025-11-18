@@ -105,8 +105,9 @@ def api_translate():
 
     src_lang = request.form['src_lang']
     tgt_lang = request.form['tgt_lang']
+    deepl_api_token = request.form['deepl_api_token'] if 'deepl_api_token' in request.form else ''
 
-    glossary = request.form['glossary'] if 'glossary' in request.form else ''
+    glossary = request.form['glossary'] if 'glossary' in request.form else None
     mask_placeholder = request.form['mask_placeholder'] if 'mask_placeholder' in request.form else ''
 
     params = Job(0,
@@ -116,6 +117,7 @@ def api_translate():
                  download_url=None,
                  glossary=glossary,
                  mask_placeholder=mask_placeholder,
+                 deepl_api_token=deepl_api_token,
                  src_lang=src_lang,
                  tgt_lang=tgt_lang)
 

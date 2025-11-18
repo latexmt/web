@@ -15,13 +15,12 @@ __translator_aligners: dict[tuple[str, str],
                             tuple[Lock, Translator, Aligner]] = {}
 
 
-def get_translator_aligner(src_lang: str, tgt_lang: str, **kwargs) -> tuple[Lock, Translator, Aligner]:
+def get_translator_aligner(src_lang: str, tgt_lang: str, trans_type: str, align_type: str, **kwargs) -> tuple[Lock, Translator, Aligner]:
     global __translator_aligners
     config = current_app.config
 
     logger = logger_from_kwargs(**kwargs)
 
-    # Add endpoint from config if available
     if config.get(ConfigKey.ENDPOINT):
         kwargs['endpoint'] = config[ConfigKey.ENDPOINT]
 
@@ -29,8 +28,8 @@ def get_translator_aligner(src_lang: str, tgt_lang: str, **kwargs) -> tuple[Lock
         if (src_lang, tgt_lang) not in __translator_aligners:
             translator, aligner = get_translator_aligner_base(
                 src_lang=src_lang, tgt_lang=tgt_lang,
-                trans_type=config[ConfigKey.TRANSLATOR],
-                align_type=config[ConfigKey.ALIGNER],
+                trans_type=trans_type,
+                align_type=align_type,
                 logger=logger,
                 **kwargs
             )

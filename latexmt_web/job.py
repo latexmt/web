@@ -13,5 +13,6 @@ class Job:
     src_lang: str
     tgt_lang: str
     download_url: Optional[str]
+    deepl_api_token: Optional[str] = None
     glossary: str = ''
     mask_placeholder: Optional[str] = None
