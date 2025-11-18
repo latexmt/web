@@ -196,6 +196,11 @@ async function translateText(event) {
   const form = event.submitter.form
   const formData = new FormData(form)
 
+  // get content of code elements
+  for (const elem of form.querySelectorAll('code[name]')) {
+    formData.set(elem.getAttribute('name'), elem.innerText)
+  }
+
   // TODO: proper form validation
   const validateSet = { 'mask_placeholder': '%INDEX%' }
   const { valid, invalid } = validateParams(formData, validateSet)
@@ -217,6 +222,27 @@ async function translateText(event) {
   }).finally(() => setFormState('enabled', event.submitter.form.id))
 
   document.querySelector('#output_text').innerHTML = await result.text()
+  // If Prism is available, re-run highlighting on the updated code element
+  try {
+    const outElem = document.querySelector('#output_text')
+    if (window.Prism && outElem) {
+      Prism.highlightElement(outElem)
+    }
+  } catch (err) {
+    // non-fatal: highlighting is optional
+    console.debug('Prism highlight error:', err)
+  }
+
+  // also re-render input text
+  try {
+    const inElem = document.querySelector('#input_text')
+    if (window.Prism && inElem) {
+      Prism.highlightElement(inElem)
+    }
+  } catch (err) {
+    // non-fatal: highlighting is optional
+    console.debug('Prism highlight error:', err)
+  }
 }
 
 /**
