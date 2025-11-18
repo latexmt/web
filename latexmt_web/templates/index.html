@@ -170,6 +170,7 @@
     background: white;
     padding: 0;
     min-height: 180px;
+    max-height: 50vh;
     cursor: text;
     overflow: auto;
   }
@@ -178,10 +179,41 @@
     display: block;
     padding: 0.6rem;
     min-height: 180px;
-    white-space: pre;
+    /* allow wrapping but preserve white-space where appropriate; prevents horizontal overflow */
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    /* let the outer <pre> handle scrolling to avoid nested scrollbars */
+    overflow: visible;
     outline: none;
     font-family: monospace;
   }
+
+  /* resizable panels */
+  .resizable-container {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .resizable-panel {
+    flex: 1 1 50%;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resizable-panel label { margin-bottom: 0.5rem; }
+
+  .divider {
+    width: 8px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03));
+    cursor: col-resize;
+    border-radius: 4px;
+    flex: 0 0 8px;
+  }
+
+  .divider:hover { background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06)); }
 
     textarea[disabled],
     code[disabled],
@@ -502,7 +534,7 @@
     }
 
     window.onload = () => {
-      addFileDrop('textarea.filedrop-target')
+  addFileDrop('.filedrop-target')
       addValueSync('.sync-value')
 
       document.forms
@@ -574,14 +606,17 @@
              aria-labelledby="tab-text">
           <form id="translate-text" enctype="multipart/form-data">
             {{ trans_params("text") }}
-            <div class="row">
-              <div class="col-md-6 mb-3">
+            <div class="resizable-container my-3">
+              <div class="resizable-panel left">
                 <label for="input" class="form-label">Input</label>
-                <pre class="filedrop-target"><code id="input_text" name="input_text" class="language-latex" contenteditable="true">asdf</code></pre>
+                <pre class="filedrop-target" onclick="this.querySelector('code').focus();"><code id="input_text" name="input_text" class="language-latex" contenteditable="true" tabindex="0"></code></pre>
               </div>
-              <div class="col-md-6 mb-3">
+
+              <div class="divider" role="separator" aria-orientation="vertical" tabindex="0" title="Drag to resize"></div>
+
+              <div class="resizable-panel right">
                 <label for="translation" class="form-label">Translation</label>
-                <pre><code id="output_text" name="output_text" class="language-latex" contenteditable="true"></code></pre>
+                <pre class="filedrop-target" onclick="this.querySelector('code').focus();"><code id="output_text" name="output_text" class="language-latex" contenteditable="true" tabindex="0"></code></pre>
               </div>
             </div>
             {{ deepl_token(id_prefix) }}

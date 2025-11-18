@@ -4,6 +4,112 @@ function getJobTable() {
   return document.querySelector(`#${jobTableId} > tbody`)
 }
 
+// Initialize draggable vertical divider for resizable panels
+function initResizer() {
+  const container = document.querySelector('.resizable-container')
+  if (!container) return
+
+  const divider = container.querySelector('.divider')
+  const left = container.querySelector('.resizable-panel.left')
+  const right = container.querySelector('.resizable-panel.right')
+  if (!divider || !left || !right) return
+
+  let dragging = false
+
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
+
+  function startDrag(e) {
+    e.preventDefault()
+    dragging = true
+    document.body.classList.add('resizing')
+    window.addEventListener('mousemove', onDrag)
+    window.addEventListener('mouseup', stopDrag)
+  }
+
+  function onDrag(e) {
+    if (!dragging) return
+    const rect = container.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const pct = clamp((x / rect.width) * 95, 5, 95)
+    left.style.flex = `0 0 ${pct}%`
+    right.style.flex = `0 0 ${100 - pct}%`
+  }
+
+  function stopDrag() {
+    dragging = false
+    document.body.classList.remove('resizing')
+    window.removeEventListener('mousemove', onDrag)
+    window.removeEventListener('mouseup', stopDrag)
+  }
+
+  // keyboard support
+  divider.addEventListener('keydown', (e) => {
+    const rect = container.getBoundingClientRect()
+    const leftWidth = left.getBoundingClientRect().width
+    let pct = (leftWidth / rect.width) * 100
+    if (e.key === 'ArrowLeft') pct = clamp(pct - 2, 5, 95)
+    if (e.key === 'ArrowRight') pct = clamp(pct + 2, 5, 95)
+    left.style.flex = `0 0 ${pct}%`
+    right.style.flex = `0 0 ${100 - pct}%`
+  })
+
+  divider.addEventListener('mousedown', startDrag)
+  divider.addEventListener('dblclick', () => {
+    left.style.flex = '0 0 50%'
+    right.style.flex = '0 0 50%'
+  })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try { initResizer() } catch (e) { console.debug('initResizer failed', e) }
+})
+
+// Enable inserting a tab character when pressing Tab inside contenteditable code blocks
+function enableTabInCode() {
+  const selector = 'pre.filedrop-target code[contenteditable], code[contenteditable]'
+
+  function attach(elem) {
+    if (elem.__tab_handler_attached) return
+    const handler = function (e) {
+      if (e.key !== 'Tab') return
+      e.preventDefault()
+      const sel = window.getSelection()
+      if (!sel || sel.rangeCount === 0) return
+      const range = sel.getRangeAt(0)
+      // insert tab character
+      const tabNode = document.createTextNode('\t')
+      range.deleteContents()
+      range.insertNode(tabNode)
+      // place caret after the inserted node
+      range.setStartAfter(tabNode)
+      range.collapse(true)
+      sel.removeAllRanges()
+      sel.addRange(range)
+    }
+    elem.addEventListener('keydown', handler)
+    elem.__tab_handler_attached = true
+  }
+
+  // attach to existing nodes
+  document.querySelectorAll(selector).forEach(attach)
+
+  // observe DOM for future code elements
+  const mo = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (!(node instanceof HTMLElement)) continue
+        if (node.matches && node.matches(selector)) attach(node)
+        node.querySelectorAll && node.querySelectorAll(selector).forEach(attach)
+      }
+    }
+  })
+  mo.observe(document.body, { childList: true, subtree: true })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  try { enableTabInCode() } catch (e) { console.debug('enableTabInCode failed', e) }
+})
+
 function clearJobTable() {
   for (const e of getJobTable().children) {
     e.remove()
