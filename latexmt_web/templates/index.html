@@ -105,6 +105,17 @@
         sans-serif;
     }
 
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+    }
+
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1rem 3rem;
+    }
+
     #submitted-job {
       color: deeppink;
     }
@@ -132,6 +143,294 @@
     #job-list {
       table-layout: fixed;
     }
+
+    .about-section {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-block {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .section-block:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-container {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .section-title {
+      color: #2c3e50;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      border-radius: 2px;
+    }
+
+    .citation-block {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      font-size: 0.85rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .citation-block::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .citation-block::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .citation-block::-webkit-scrollbar-thumb {
+      background: #667eea;
+      border-radius: 10px;
+    }
+
+    .btn-custom {
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border-radius: 8px;
+      padding: 0.5rem 1.2rem;
+    }
+
+    .btn-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .paper-card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .paper-card:hover {
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .nav-tabs {
+      border-bottom: 2px solid #e9ecef;
+      margin-bottom: 0;
+    }
+
+    .nav-tabs .nav-link {
+      color: #6c757d;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px 8px 0 0;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.3s ease;
+      margin-right: 0.5rem;
+    }
+
+    .nav-tabs .nav-link:hover {
+      color: #667eea;
+      background: #f8f9fa;
+    }
+
+    .nav-tabs .nav-link.active {
+      color: #667eea;
+      background: white;
+      border-bottom: 3px solid #667eea;
+      font-weight: 600;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 250px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+      background: #5a6268;
+    }
+
+    .accordion-button {
+      font-weight: 600;
+      color: #2c3e50;
+      background: #f8f9fa;
+      border-radius: 8px !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #667eea;
+      box-shadow: none;
+    }
+
+    .accordion-button:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .accordion-item {
+      border: 2px solid #e9ecef;
+      border-radius: 10px !important;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .table {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .table thead th {
+      background: #667eea;
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: .5rem;
+    }
+
+    .table tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+      background: #f8f9fa;
+      transform: scale(1.01);
+    }
+
+    .input-group-text {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+      border: 2px solid #e9ecef;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+
+    .form-floating > label {
+      color: #6c757d;
+    }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+      color: #667eea;
+    }
+
+    .form-text {
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+
+    .filedrop-target {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .filedrop-target:hover {
+      border-color: #667eea;
+      background: #f8f9fa;
+    }
+
+    hr {
+      border-top: 2px solid #e9ecef;
+      margin: 2rem 0;
+    }
+
+    #citation-area {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out, margin-top 0.4s ease-out;
+    }
+
+    #citation-area.show {
+      max-height: 500px;
+      margin-top: 1rem;
+    }
+
+    .btn-outline-custom {
+      border: 2px solid #667eea;
+      color: #667eea;
+      background: transparent;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border-radius: 8px;
+      padding: 0.5rem 1.2rem;
+    }
+
+    .btn-outline-custom:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
   </style>
   <script type="text/javascript"
           src="{{ url_for('static', filename='js/latexmt.js') }}"></script>
@@ -155,17 +454,35 @@
 
       updateLoop()
     }
+
+    function toggleCitation() {
+      const citationArea = document.getElementById('citation-area');
+      const btn = document.getElementById('citation-btn');
+      citationArea.classList.toggle('show');
+      
+      if (citationArea.classList.contains('show')) {
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash me-2" viewBox="0 0 16 16">
+          <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.244-.517.486z"/>
+          <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+          <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+        </svg>Hide Citation`;
+      } else {
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-quote me-2" viewBox="0 0 16 16">
+          <path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/>
+        </svg>Show Citation`;
+      }
+    }
   </script>
 </head>
 <body>
-  <div style="max-width: 1200px" class="mx-auto p-4 py-md-5">
-    <header class="d-flex align-items-center pb-3 mb-3 border-bottom">
+  <div class="page-container">
+    <header class="d-flex align-items-center position-relative">
       <a href="/"
          class="d-flex align-items-center text-body-emphasis text-decoration-none">
         <span class="fs-4">\(\LaTeX{}\)MT Web</span>
       </a>
     </header>
-    <main>
+    <main class="main-content">
       <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
           <button class="nav-link active"
@@ -240,7 +557,7 @@
             <h3>Active jobs</h3>
             <table class="table" id="job-list">
               <colgroup>
-                <col style="width: 2cm">
+                <col style="width: 3cm">
                 <col>
                 <col style="width: 2cm">
               </colgroup>
@@ -258,9 +575,137 @@
         {% endif %}
       </div>
     </main>
-    <footer class="pt-5 my-5 text-body-secondary border-top">
-      Calvin Hoy &middot; &copy; 2025 &middot;
-      <a href="https://github.com/latexmt">Source Code</a>
+    <section class="my-5 p-4 py-5 about-section">
+      <h2 class="mb-4 text-center" style="color: #2c3e50; font-weight: 700;">About \(\LaTeX{}\)MT</h2>
+      <p class="lead text-center mb-5" style="color: #34495e; max-width: 800px; margin-left: auto; margin-right: auto;">
+        \(\LaTeX{}\)MT is a tool for machine translation of \(\LaTeX{}\) documents that preserves document structure and formatting while translating the content.
+      </p>
+      
+      <div class="my-4 section-block">
+        <h3 class="section-title h5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+          </svg>
+          Source Code
+        </h3>
+        <p style="color: #555;">
+          LaTeXMT is open-source software released under the LGPL-3.0 license. 
+          The complete source code, documentation, and examples are available on GitHub:
+        </p>
+        <a href="https://github.com/latexmt" 
+           class="btn btn-dark btn-custom" 
+           target="_blank" 
+           rel="noopener noreferrer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github me-2" viewBox="0 0 16 16">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+      
+      <div class="my-4 section-block">
+        <h3 class="section-title h5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+          </svg>
+          Research Paper
+        </h3>
+        <p style="color: #555;">
+          For more details about the methodology and evaluation, please refer to our paper:
+        </p>
+        <div class="card paper-card">
+          <div class="card-body">
+            <p class="mb-2">
+              <strong style="color: #2c3e50;">\(\LaTeX{}\)MT: Machine Translation for \(\LaTeX{}\) Documents</strong>
+            </p>
+            <p class="mb-3 text-muted">
+              <small>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-people me-1" viewBox="0 0 16 16">
+                  <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                </svg>
+                Calvin Hoy, Samuel Frontull and Georg Moser
+              </small>
+              <br>
+              <small>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-calendar-event me-1" viewBox="0 0 16 16">
+                  <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                </svg>
+                EMNLP 2025 System Demonstrations
+              </small>
+            </p>
+            <a href="https://aclanthology.org/2025.emnlp-demos.56.pdf" 
+               class="btn btn-primary btn-custom" 
+               target="_blank" 
+               rel="noopener noreferrer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-pdf me-2" viewBox="0 0 16 16">
+                <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/>
+                <path d="M4.603 12.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.187-.012.395-.047.614-.084.51-.27 1.134-.52 1.794a11 11 0 0 0 .98 1.686 5.8 5.8 0 0 1 1.334.05c.364.065.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.86.86 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.7 5.7 0 0 1-.911-.95 11.6 11.6 0 0 0-1.997.406 11.3 11.3 0 0 1-1.021 1.51c-.29.35-.608.655-.926.787a.8.8 0 0 1-.58.029m1.379-1.901q-.25.115-.459.238c-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361q.016.032.026.044l.035-.012c.137-.056.355-.235.635-.572a8 8 0 0 0 .45-.606m1.64-1.33a13 13 0 0 1 1.01-.193 12 12 0 0 1-.51-.858 21 21 0 0 1-.5 1.05zm2.446.45q.226.244.435.41c.24.19.407.253.498.256a.1.1 0 0 0 .07-.015.3.3 0 0 0 .094-.125.44.44 0 0 0 .059-.2.1.1 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a4 4 0 0 0-.612-.053zM8.078 5.8a7 7 0 0 0 .2-.828q.046-.282.038-.465a.6.6 0 0 0-.032-.198.5.5 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822q.036.167.09.346z"/>
+              </svg>
+              Download PDF
+            </a>
+            <button type="button" 
+                    class="btn btn-outline-custom ms-2" 
+                    id="citation-btn"
+                    onclick="toggleCitation()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-quote me-2" viewBox="0 0 16 16">
+                <path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388q0-.527.062-1.054.093-.558.31-.992t.559-.683q.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612q0-.527.062-1.054.094-.558.31-.992.217-.434.559-.683.34-.279.868-.279V3q-.868 0-1.52.372a3.3 3.3 0 0 0-1.085.992 4.9 4.9 0 0 0-.62 1.458A7.7 7.7 0 0 0 3 7.558V11a1 1 0 0 0 1 1z"/>
+              </svg>
+              Show Citation
+            </button>
+            <div id="citation-area">
+              <pre class="citation-block p-3 border rounded mt-0"><code>@inproceedings{hoy-etal-2025-latexmt,
+    title = "{L}a{T}e{XMT}: Machine Translation for {L}a{T}e{X} Documents",
+    author = "Hoy, Calvin  and
+      Frontull, Samuel  and
+      Moser, Georg",
+    editor = {Habernal, Ivan  and
+      Schulam, Peter  and
+      Tiedemann, J{\"o}rg},
+    booktitle = "Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
+    month = nov,
+    year = "2025",
+    address = "Suzhou, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.emnlp-demos.56/",
+    doi = "10.18653/v1/2025.emnlp-demos.56",
+    pages = "739--748",
+    ISBN = "979-8-89176-334-0",
+    abstract = "While machine translation has taken great strides in recent years, thanks in large part to transformer language models, machine translation tools are designed primarily for plain text, and thus not equipped to deal with complex markup documents. Not even Large Language Models can reliably handle LaTeX source files, as non-standard structures are not captured by any available training data. Previous attempts to create translation engines for LaTeX either work on compiled documents, rely on document pre-processors which may lose critical semantic elements, or cannot distinguish between text and non-text content. In this paper we present LaTeXMT, a software solution for structure-preserving, source-to-source translation of LaTeX documents. All of the source code to LaTeXMT is provided under the LGPL-3.0 open-source licence and a web version is publicly available."
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="my-4 section-block">
+        <h3 class="section-title h5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
+          </svg>
+          Demo Video
+        </h3>
+        <div class="ratio ratio-16x9 video-container">
+          <iframe src="https://www.youtube.com/embed/reXOXoZfw3s" 
+                  title="LaTeXMT Demo" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </section>
+    
+    <footer class="mt-5 pt-4 pb-3 text-center" style="color: #6c757d; border-top: 2px solid rgba(102, 126, 234, 0.2);">
+      <p class="mb-0">
+        <a href="https://www.uibk.ac.at/en/theoretical-computer-science/" style="color: #667eea; text-decoration: none; font-weight: 500;">Theoretical Computer Science Research Group</a> 
+        at the 
+        <a href="https://www.uibk.ac.at/en/informatik/" style="color: #667eea; text-decoration: none; font-weight: 500;">Department of Computer Science</a> 
+        of the 
+        <a href="https://www.uibk.ac.at/en/" style="color: #667eea; text-decoration: none; font-weight: 500;">University of Innsbruck</a> 
+        &middot; &copy; 2025
+      </p>
     </footer>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
