@@ -11,7 +11,7 @@ from latexmt_core.alignment import Aligner
 from latexmt_core.translation import Translator
 
 __translator_aligners_mutex = Lock()
-__translator_aligners: dict[tuple[str, str],
+__translator_aligners: dict[tuple[str, str, str],
                             tuple[Lock, Translator, Aligner]] = {}
 
 
@@ -25,7 +25,7 @@ def get_translator_aligner(src_lang: str, tgt_lang: str, trans_type: str, align_
         kwargs['endpoint'] = config[ConfigKey.ENDPOINT]
 
     with __translator_aligners_mutex:
-        if (src_lang, tgt_lang) not in __translator_aligners:
+        if (src_lang, tgt_lang, trans_type) not in __translator_aligners or (trans_type == 'api_deepl'):
             translator, aligner = get_translator_aligner_base(
                 src_lang=src_lang, tgt_lang=tgt_lang,
                 trans_type=trans_type,
@@ -34,9 +34,9 @@ def get_translator_aligner(src_lang: str, tgt_lang: str, trans_type: str, align_
                 **kwargs
             )
 
-            __translator_aligners[(src_lang, tgt_lang)] = \
+            __translator_aligners[(src_lang, tgt_lang, trans_type)] = \
                 (Lock(), translator, aligner)
 
-    lock, translator, aligner = __translator_aligners[(src_lang, tgt_lang)]
+    lock, translator, aligner = __translator_aligners[(src_lang, tgt_lang, trans_type)]
     
     return lock, translator, aligner

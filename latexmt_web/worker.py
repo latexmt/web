@@ -27,11 +27,10 @@ def translate_single(input_text: str, src_lang: str, tgt_lang: str, params: Job)
     trans_type = config[ConfigKey.TRANSLATOR]
     align_type = config[ConfigKey.ALIGNER]
 
-    # if deepl_api_token is set, load deepl translator
     if params.deepl_api_token is not None and len(params.deepl_api_token.strip()) > 0:
         trans_type = "api_deepl"
         os.environ["DEEPL_API_TOKEN"] = params.deepl_api_token.strip()
-
+    
     lock, translator, aligner = get_translator_aligner(
         src_lang,
         tgt_lang,
